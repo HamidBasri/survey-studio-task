@@ -224,11 +224,39 @@ Below are selected screenshots demonstrating key parts of the application.
 ```bash
 ./run.sh dev          # Start development environment
 ./run.sh dev-down     # Stop development environment
-./run.sh db-studio    # Open Drizzle Studio (DB GUI)
-./run.sh seed         # Seed database
+./run.sh db-studio    # Start Drizzle Studio (DB GUI at http://localhost:8080)
+./run.sh seed         # Seed database with default admin and user accounts
 ./run.sh lint         # Run linter
 ./run.sh format       # Format code
 ```
+
+#### User seeds
+
+To populate the database with default admin and user demo accounts:
+
+```bash
+# Make sure the dev environment is running
+./run.sh dev
+
+# In a separate terminal, run the seed script
+./run.sh seed
+```
+
+After seeding, you can log in using the credentials listed in **Access the Application** above.
+
+#### Drizzle Studio
+
+To launch the Drizzle Studio interface:
+
+```bash
+# Make sure the dev environment is running
+./run.sh dev
+
+# In a separate terminal, start Drizzle Studio
+./run.sh db-studio
+```
+
+Then open <https://local.drizzle.studio> in your browser to access the Drizzle Studio UI.
 
 ### Database Management
 
