@@ -152,7 +152,7 @@ export function ExampleEditSurvey() {
     rating: 4,
   }
 
-  const handleSubmit = async (data: Record<string, any>) => {
+  const handleSubmit = async (data: SurveyFormValues) => {
     setIsSubmitting(true)
     console.log('Updated data:', data)
     // Update logic here

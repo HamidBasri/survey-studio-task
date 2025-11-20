@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import type { Question, SurveyConfig } from '@/lib/config/survey'
 import { getVisibleQuestions } from '@/lib/survey/condition-evaluator'
 import { useCallback } from 'react'
-import { FormProvider, type UseFormReturn, useForm } from 'react-hook-form'
+import { FormProvider, type UseFormReturn, useForm, useWatch } from 'react-hook-form'
 import { FieldFactory } from './field-factory'
 
 export type SurveyFormValues = Record<string, unknown>
@@ -34,7 +34,7 @@ export function DynamicSurveyForm({
     mode: 'onBlur',
   })
 
-  const formValues = form.watch()
+  const formValues = useWatch({ control: form.control })
 
   const visibleQuestions = getVisibleQuestions(config.questions, formValues)
 

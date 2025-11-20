@@ -1,0 +1,55 @@
+# ----------------------------------------
+# Git Text Normalisation
+# ----------------------------------------
+*          text=auto eol=lf
+
+# ----------------------------------------
+# Handle common file types
+# ----------------------------------------
+*.js       text
+*.jsx      text
+*.ts       text
+*.tsx      text
+*.json     text
+*.css      text
+*.scss     text
+*.md       text
+*.yml      text
+*.yaml     text
+*.html     text
+*.sql      text
+*.sh       text eol=lf
+
+# ----------------------------------------
+# Treat executable scripts correctly
+# ----------------------------------------
+*.sh       text eol=lf
+
+# ----------------------------------------
+# Prevent Git from applying EOL conversion
+# (binary / images / fonts)
+# ----------------------------------------
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.ico      binary
+*.webp     binary
+*.ttf      binary
+*.otf      binary
+*.woff     binary
+*.woff2    binary
+*.mp4      binary
+*.mp3      binary
+
+# ----------------------------------------
+# Documentation classification for GitHub
+# ----------------------------------------
+docs/*     linguist-documentation
+*.md       linguist-documentation
+
+# ----------------------------------------
+# Ignore AI Editor metadata (classification only)
+# ----------------------------------------
+.windsurf/* linguist-generated
+.cursor/*  linguist-generated

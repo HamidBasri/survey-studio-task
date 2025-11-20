@@ -26,38 +26,38 @@ Parts of this project were developed leveraging **Large Language Models (LLMs)**
 
 ### Frontend
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Next.js** | 16.0.3 | React framework with App Router for server-side rendering and routing |
-| **React** | 19.2.0 | UI library for building interactive components |
-| **TypeScript** | 5.x | Type-safe JavaScript for enhanced developer experience |
-| **TailwindCSS** | 4.x | Utility-first CSS framework for rapid UI development |
-| **shadcn/ui** | Latest | High-quality, accessible React components built on Radix UI |
-| **Lucide React** | 0.554.0 | Beautiful, consistent icon library |
-| **React Hook Form** | 7.66.1 | Performant form management with validation |
-| **Zod** | 4.1.12 | TypeScript-first schema validation |
-| **TanStack Query** | 5.90.10 | Powerful data synchronisation and caching |
-| **Zustand** | 5.0.8 | Lightweight state management |
+| Technology          | Version | Purpose                                                               |
+| ------------------- | ------- | --------------------------------------------------------------------- |
+| **Next.js**         | 16.0.3  | React framework with App Router for server-side rendering and routing |
+| **React**           | 19.2.0  | UI library for building interactive components                        |
+| **TypeScript**      | 5.x     | Type-safe JavaScript for enhanced developer experience                |
+| **TailwindCSS**     | 4.x     | Utility-first CSS framework for rapid UI development                  |
+| **shadcn/ui**       | Latest  | High-quality, accessible React components built on Radix UI           |
+| **Lucide React**    | 0.554.0 | Beautiful, consistent icon library                                    |
+| **React Hook Form** | 7.66.1  | Performant form management with validation                            |
+| **Zod**             | 4.1.12  | TypeScript-first schema validation                                    |
+| **TanStack Query**  | 5.90.10 | Powerful data synchronisation and caching                             |
+| **Zustand**         | 5.0.8   | Lightweight state management                                          |
 
 ### Backend
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Next.js API Routes** | 16.0.3 | Serverless API endpoints |
-| **NextAuth.js** | 5.0.0-beta.30 | Authentication library with JWT strategy |
-| **Drizzle ORM** | 0.44.7 | Type-safe SQL ORM with excellent TypeScript support |
-| **PostgreSQL** | 18 | Relational database for data persistence |
-| **Drizzle Kit** | 0.31.7 | Database migrations and schema management |
+| Technology             | Version       | Purpose                                             |
+| ---------------------- | ------------- | --------------------------------------------------- |
+| **Next.js API Routes** | 16.0.3        | Serverless API endpoints                            |
+| **NextAuth.js**        | 5.0.0-beta.30 | Authentication library with JWT strategy            |
+| **Drizzle ORM**        | 0.44.7        | Type-safe SQL ORM with excellent TypeScript support |
+| **PostgreSQL**         | 18            | Relational database for data persistence            |
+| **Drizzle Kit**        | 0.31.7        | Database migrations and schema management           |
 
 ### Development Tools
 
-| Tool | Purpose |
-|------|---------|
-| **Bun** | Fast JavaScript runtime and package manager |
-| **ESLint** | Code linting with TypeScript support |
-| **Prettier** | Code formatting with Tailwind plugin |
+| Tool                        | Purpose                                         |
+| --------------------------- | ----------------------------------------------- |
+| **Bun**                     | Fast JavaScript runtime and package manager     |
+| **ESLint**                  | Code linting with TypeScript support            |
+| **Prettier**                | Code formatting with Tailwind plugin            |
 | **Docker & Docker Compose** | Containerisation for development and production |
-| **Drizzle Studio** | Visual database browser and manager |
+| **Drizzle Studio**          | Visual database browser and manager             |
 
 ## Core Features
 

@@ -4,22 +4,24 @@
 
 Before setting up Survey Studio, ensure you have the following installed:
 
-| Tool | Minimum Version | Purpose |
-|------|----------------|---------|
-| **Bun** | 1.0+ | JavaScript runtime and package manager |
-| **Docker** | 20.10+ | Containerisation platform |
-| **Docker Compose** | 2.0+ | Multi-container orchestration |
-| **Node.js** | 20+ | Alternative runtime (optional) |
-| **Git** | 2.0+ | Version control |
+| Tool               | Minimum Version | Purpose                                |
+| ------------------ | --------------- | -------------------------------------- |
+| **Bun**            | 1.0+            | JavaScript runtime and package manager |
+| **Docker**         | 20.10+          | Containerisation platform              |
+| **Docker Compose** | 2.0+            | Multi-container orchestration          |
+| **Node.js**        | 20+             | Alternative runtime (optional)         |
+| **Git**            | 2.0+            | Version control                        |
 
 ### Installing Bun
 
 **macOS/Linux:**
+
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
 **Verify installation:**
+
 ```bash
 bun --version
 ```
@@ -29,6 +31,7 @@ bun --version
 Download and install Docker Desktop from: https://www.docker.com/products/docker-desktop
 
 **Verify installation:**
+
 ```bash
 docker --version
 docker compose version
@@ -75,6 +78,7 @@ LOG_LEVEL=info
 ```
 
 **Generate AUTH_SECRET:**
+
 ```bash
 openssl rand -base64 32
 ```
@@ -94,22 +98,26 @@ This will install all dependencies listed in `package.json`.
 ### Option 1: Docker (Recommended)
 
 **Start development environment:**
+
 ```bash
 ./run.sh dev
 ```
 
 This command:
+
 1. Starts PostgreSQL container
 2. Starts Next.js dev server in container
 3. Watches for file changes (hot reload)
 4. Exposes app on `http://localhost:3000`
 
 **Stop development environment:**
+
 ```bash
 ./run.sh dev-down
 ```
 
 **View logs:**
+
 ```bash
 docker compose -f docker-compose.dev.yml logs -f
 ```
@@ -117,6 +125,7 @@ docker compose -f docker-compose.dev.yml logs -f
 ### Option 2: Local Development (without Docker)
 
 **Start PostgreSQL manually:**
+
 ```bash
 # Using Docker for database only
 docker run -d \
@@ -129,6 +138,7 @@ docker run -d \
 ```
 
 **Run application:**
+
 ```bash
 bun run dev
 ```
@@ -144,6 +154,7 @@ Application will be available at `http://localhost:3000`.
 After starting the development environment, initialise the database:
 
 **1. Generate migration files** (if not already present):
+
 ```bash
 ./run.sh db-generate
 ```
@@ -151,6 +162,7 @@ After starting the development environment, initialise the database:
 This creates migration SQL files in `/drizzle/` based on your schema definitions.
 
 **2. Apply migrations:**
+
 ```bash
 ./run.sh db-migrate
 ```
@@ -158,11 +170,13 @@ This creates migration SQL files in `/drizzle/` based on your schema definitions
 This executes the migration files against your PostgreSQL database.
 
 **3. Seed the database:**
+
 ```bash
 ./run.sh seed
 ```
 
 This populates the database with initial data:
+
 - **Admin user**: `admin@example.com` / `admin123456`
 - **Regular user**: `user@example.com` / `user123456`
 - **Sample surveys**: 3 surveys (1 public, 2 private)
@@ -170,6 +184,7 @@ This populates the database with initial data:
 ### Database Management Commands
 
 **Open Drizzle Studio** (visual database browser):
+
 ```bash
 ./run.sh db-studio
 ```
@@ -177,11 +192,13 @@ This populates the database with initial data:
 Access at: `https://local.drizzle.studio`
 
 **Reset database** (⚠️ Destroys all data):
+
 ```bash
 ./run.sh reset-db
 ```
 
 This will:
+
 1. Stop containers
 2. Delete volumes
 3. Restart containers
@@ -190,11 +207,13 @@ This will:
 After reset, you need to run migrations and seed again.
 
 **Re-seed database** (safe mode - replaces only seed data):
+
 ```bash
 ./run.sh seed
 ```
 
 The seed script intelligently:
+
 - Deletes only previously seeded data
 - Preserves manually created records
 - Re-inserts fresh seed data
@@ -234,6 +253,7 @@ open http://localhost:3000
 ### Making Schema Changes
 
 **1. Modify schema files:**
+
 ```bash
 src/lib/db/schema/
 ├── user.ts
@@ -243,6 +263,7 @@ src/lib/db/schema/
 ```
 
 **2. Generate migration:**
+
 ```bash
 ./run.sh db-generate
 ```
@@ -250,16 +271,19 @@ src/lib/db/schema/
 Drizzle Kit will create a new migration file in `/drizzle/`.
 
 **3. Review migration:**
+
 ```bash
 cat drizzle/0001_new_migration.sql
 ```
 
 **4. Apply migration:**
+
 ```bash
 ./run.sh db-migrate
 ```
 
 **5. Update seed script** (if needed):
+
 ```bash
 src/lib/db/seed.ts
 ```
@@ -271,11 +295,13 @@ src/lib/db/seed.ts
 ### Linting
 
 **Run ESLint:**
+
 ```bash
 ./run.sh lint
 ```
 
 **Auto-fix issues:**
+
 ```bash
 bun run lint:fix
 ```
@@ -283,11 +309,13 @@ bun run lint:fix
 ### Formatting
 
 **Format all files:**
+
 ```bash
 ./run.sh format
 ```
 
 **Check formatting:**
+
 ```bash
 bun run format:check
 ```
@@ -295,6 +323,7 @@ bun run format:check
 ### Pre-commit Workflow
 
 Before committing:
+
 ```bash
 ./run.sh format
 ./run.sh lint
@@ -307,11 +336,13 @@ Before committing:
 ### Building for Production
 
 **1. Build Docker image:**
+
 ```bash
 ./run.sh prod-build
 ```
 
 This creates an optimised production image using multi-stage builds:
+
 - Dependencies layer (cached)
 - Build layer (Next.js optimised build)
 - Runtime layer (minimal, production-ready)
@@ -319,6 +350,7 @@ This creates an optimised production image using multi-stage builds:
 **2. Configure production environment:**
 
 Create `.env.production`:
+
 ```env
 # Database (use external managed database)
 DATABASE_URL=postgresql://user:password@db-host:5432/survey_studio
@@ -335,16 +367,19 @@ LOG_LEVEL=warn
 ```
 
 **3. Start production environment:**
+
 ```bash
 ./run.sh prod-up
 ```
 
 **4. Run migrations:**
+
 ```bash
 docker exec survey-studio-app bunx drizzle-kit migrate
 ```
 
 **5. Seed database** (optional, only for initial setup):
+
 ```bash
 docker exec survey-studio-app bun run src/lib/db/seed.ts
 ```
@@ -379,6 +414,7 @@ nano .env  # Configure production settings
 #### 2. Kubernetes
 
 Create Kubernetes manifests for:
+
 - PostgreSQL StatefulSet (or use managed database)
 - Next.js Deployment
 - Service (LoadBalancer or Ingress)
@@ -388,18 +424,21 @@ Create Kubernetes manifests for:
 #### 3. Platform-as-a-Service
 
 **Vercel** (Next.js native):
+
 - Connect GitHub repository
 - Set environment variables in dashboard
 - Auto-deploys on push to main branch
 - **Note**: Requires external PostgreSQL (Vercel Postgres, Supabase, etc.)
 
 **Railway**:
+
 - Connect repository
 - Add PostgreSQL service
 - Configure environment variables
 - Auto-deploys with hot reload
 
 **Render**:
+
 - Create Web Service from repository
 - Add PostgreSQL database
 - Set environment variables
@@ -411,55 +450,57 @@ Create Kubernetes manifests for:
 
 ### Project Script (`./run.sh`)
 
-| Command | Description |
-|---------|-------------|
-| `dev` | Start development environment (Docker) |
-| `dev-down` | Stop development environment |
-| `prod-build` | Build production Docker images |
-| `prod-up` | Start production environment |
-| `prod-down` | Stop production environment |
-| `lint` | Run ESLint |
-| `format` | Format code with Prettier |
-| `db-generate` | Generate Drizzle migrations |
-| `db-migrate` | Apply Drizzle migrations |
-| `db-studio` | Open Drizzle Studio |
-| `seed` | Run database seed script |
-| `clean` | Remove `.next` build artefacts |
-| `reset-db` | Drop and recreate database (dev only) |
-| `help` | Show all available commands |
+| Command       | Description                            |
+| ------------- | -------------------------------------- |
+| `dev`         | Start development environment (Docker) |
+| `dev-down`    | Stop development environment           |
+| `prod-build`  | Build production Docker images         |
+| `prod-up`     | Start production environment           |
+| `prod-down`   | Stop production environment            |
+| `lint`        | Run ESLint                             |
+| `format`      | Format code with Prettier              |
+| `db-generate` | Generate Drizzle migrations            |
+| `db-migrate`  | Apply Drizzle migrations               |
+| `db-studio`   | Open Drizzle Studio                    |
+| `seed`        | Run database seed script               |
+| `clean`       | Remove `.next` build artefacts         |
+| `reset-db`    | Drop and recreate database (dev only)  |
+| `help`        | Show all available commands            |
 
 ### NPM/Bun Scripts
 
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start Next.js dev server |
-| `bun run build` | Build Next.js for production |
-| `bun run start` | Start production server |
-| `bun run lint` | Run ESLint |
-| `bun run lint:fix` | Fix ESLint issues automatically |
-| `bun run format` | Format code |
-| `bun run format:check` | Check code formatting |
+| Command                | Description                     |
+| ---------------------- | ------------------------------- |
+| `bun run dev`          | Start Next.js dev server        |
+| `bun run build`        | Build Next.js for production    |
+| `bun run start`        | Start production server         |
+| `bun run lint`         | Run ESLint                      |
+| `bun run lint:fix`     | Fix ESLint issues automatically |
+| `bun run format`       | Format code                     |
+| `bun run format:check` | Check code formatting           |
 
 ### Docker Commands
 
-| Command | Description |
-|---------|-------------|
-| `docker compose -f docker-compose.dev.yml up` | Start dev containers |
-| `docker compose -f docker-compose.dev.yml down` | Stop dev containers |
-| `docker compose -f docker-compose.dev.yml logs -f` | View logs |
-| `docker exec -it app_dev sh` | Shell into app container |
-| `docker exec -it db_dev psql -U postgres survey_studio` | PostgreSQL CLI |
-| `docker volume ls` | List Docker volumes |
-| `docker volume rm <volume-name>` | Remove volume |
+| Command                                                 | Description              |
+| ------------------------------------------------------- | ------------------------ |
+| `docker compose -f docker-compose.dev.yml up`           | Start dev containers     |
+| `docker compose -f docker-compose.dev.yml down`         | Stop dev containers      |
+| `docker compose -f docker-compose.dev.yml logs -f`      | View logs                |
+| `docker exec -it app_dev sh`                            | Shell into app container |
+| `docker exec -it db_dev psql -U postgres survey_studio` | PostgreSQL CLI           |
+| `docker volume ls`                                      | List Docker volumes      |
+| `docker volume rm <volume-name>`                        | Remove volume            |
 
 ### Database Commands
 
 **Direct PostgreSQL access:**
+
 ```bash
 docker exec -it db_dev psql -U postgres survey_studio
 ```
 
 **Common PostgreSQL commands:**
+
 ```sql
 \dt              -- List tables
 \d users         -- Describe table
@@ -474,11 +515,13 @@ docker exec -it db_dev psql -U postgres survey_studio
 ### Port Already in Use
 
 **Error:**
+
 ```
 Error: bind: address already in use
 ```
 
 **Solution:**
+
 ```bash
 # Find process using port 3000
 lsof -ti:3000
@@ -493,21 +536,25 @@ APP_PORT=3001
 ### Database Connection Failed
 
 **Error:**
+
 ```
 Error: connect ECONNREFUSED
 ```
 
 **Check database is running:**
+
 ```bash
 docker ps
 ```
 
 **Verify environment variables:**
+
 ```bash
 cat .env
 ```
 
 **Test database connection:**
+
 ```bash
 docker exec -it db_dev pg_isready -U postgres
 ```
@@ -515,11 +562,13 @@ docker exec -it db_dev pg_isready -U postgres
 ### Migration Fails
 
 **Error:**
+
 ```
 Error: relation "users" already exists
 ```
 
 **Solution 1: Drop and recreate (dev only):**
+
 ```bash
 ./run.sh reset-db
 ./run.sh db-migrate
@@ -527,6 +576,7 @@ Error: relation "users" already exists
 ```
 
 **Solution 2: Manual cleanup:**
+
 ```bash
 docker exec -it db_dev psql -U postgres survey_studio -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 ./run.sh db-migrate
@@ -611,6 +661,7 @@ Logs are output to stdout/stderr with structured format:
 ```
 
 **View logs:**
+
 ```bash
 docker compose -f docker-compose.dev.yml logs -f app
 ```
@@ -624,6 +675,7 @@ docker compose -f docker-compose.dev.yml logs -f db
 ### Production Logging
 
 Consider integrating:
+
 - **Datadog**: APM and log aggregation
 - **New Relic**: Performance monitoring
 - **Sentry**: Error tracking
@@ -636,16 +688,19 @@ Consider integrating:
 ### Database Backup
 
 **Backup:**
+
 ```bash
 docker exec db_dev pg_dump -U postgres survey_studio > backup.sql
 ```
 
 **Restore:**
+
 ```bash
 cat backup.sql | docker exec -i db_dev psql -U postgres survey_studio
 ```
 
 **Automated backups** (cron job):
+
 ```bash
 0 2 * * * /path/to/backup-script.sh
 ```
@@ -653,6 +708,7 @@ cat backup.sql | docker exec -i db_dev psql -U postgres survey_studio
 ### File Backups
 
 Currently, the application doesn't store files. If file uploads are added:
+
 - Use cloud storage (S3, CloudFlare R2)
 - Backup uploaded files regularly
 - Consider versioning/soft deletes
@@ -662,21 +718,25 @@ Currently, the application doesn't store files. If file uploads are added:
 ## Upgrading Dependencies
 
 ### Check for updates:
+
 ```bash
 bun outdated
 ```
 
 ### Update all dependencies:
+
 ```bash
 bun update
 ```
 
 ### Update specific package:
+
 ```bash
 bun update next@latest
 ```
 
 ### After updates:
+
 ```bash
 ./run.sh lint
 ./run.sh format
@@ -696,6 +756,7 @@ After setup:
 5. **Explore the codebase** and make modifications
 
 For more information:
+
 - [User Flows](./06-user-flows.md)
 - [API Reference](./04-api-endpoints.md)
 - [Database Schema](./03-database.md)

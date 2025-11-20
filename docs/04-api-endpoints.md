@@ -239,7 +239,9 @@ Create a new survey.
   "survey": {
     "id": "880e8400-e29b-41d4-a716-446655440003",
     "title": "Employee Engagement Survey",
-    "config": { /* full config */ },
+    "config": {
+      /* full config */
+    },
     "visibility": "private",
     "creatorId": "550e8400-e29b-41d4-a716-446655440000",
     "createdAt": "2025-11-18T11:00:00.000Z"
@@ -298,7 +300,9 @@ Get surveys available to current user (public + assigned).
     {
       "id": "770e8400-e29b-41d4-a716-446655440002",
       "title": "Customer Satisfaction Survey",
-      "config": { /* survey config */ },
+      "config": {
+        /* survey config */
+      },
       "visibility": "public",
       "creatorId": "550e8400-e29b-41d4-a716-446655440000",
       "createdAt": "2025-11-18T10:00:00.000Z",
@@ -308,7 +312,9 @@ Get surveys available to current user (public + assigned).
     {
       "id": "880e8400-e29b-41d4-a716-446655440003",
       "title": "Employee Engagement Survey",
-      "config": { /* survey config */ },
+      "config": {
+        /* survey config */
+      },
       "visibility": "private",
       "creatorId": "550e8400-e29b-41d4-a716-446655440000",
       "createdAt": "2025-11-18T11:00:00.000Z",
@@ -472,16 +478,16 @@ All errors follow a consistent format:
 
 ### HTTP Status Codes
 
-| Code | Meaning | Usage |
-|------|---------|-------|
-| `200` | OK | Successful GET/DELETE |
-| `201` | Created | Successful POST (resource created) |
-| `400` | Bad Request | Validation error, malformed request |
-| `401` | Unauthorized | Not authenticated (missing/invalid session) |
-| `403` | Forbidden | Not authorised (insufficient permissions) |
-| `404` | Not Found | Resource doesn't exist |
-| `409` | Conflict | Duplicate resource (e.g., email exists) |
-| `500` | Internal Server Error | Unexpected server error |
+| Code  | Meaning               | Usage                                       |
+| ----- | --------------------- | ------------------------------------------- |
+| `200` | OK                    | Successful GET/DELETE                       |
+| `201` | Created               | Successful POST (resource created)          |
+| `400` | Bad Request           | Validation error, malformed request         |
+| `401` | Unauthorized          | Not authenticated (missing/invalid session) |
+| `403` | Forbidden             | Not authorised (insufficient permissions)   |
+| `404` | Not Found             | Resource doesn't exist                      |
+| `409` | Conflict              | Duplicate resource (e.g., email exists)     |
+| `500` | Internal Server Error | Unexpected server error                     |
 
 ---
 

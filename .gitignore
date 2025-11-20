@@ -27,9 +27,47 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env*.local
+# ------------------------------------------------------------
+# ENVIRONMENT & CONFIG
+# ------------------------------------------------------------
 .env
+.env.*
+!.env.example
+.env.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# ------------------------------------------------------------
+# EDITOR / IDE SETTINGS
+# ------------------------------------------------------------
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Windsurf (AI Editor)
+.windsurfrc
+.windsurf/
+windsurf/
+
+# Cursor IDE (AI Editor)
+.cursor/
+.cursor.json
+cursor.json
+
+# ------------------------------------------------------------
+# NEXT.JS
+# ------------------------------------------------------------
+.next/
+out/
+dist/
+.next/cache/
+server/
+
+# Build artifacts
+build/
+!.storybook/
 
 # vercel
 .vercel

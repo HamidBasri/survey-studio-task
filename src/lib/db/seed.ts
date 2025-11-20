@@ -84,7 +84,7 @@ async function main() {
     ],
   }
 
-  const [publicSurvey] = await db
+  await db
     .insert(survey)
     .values({
       title: publicSurveyConfig.title,

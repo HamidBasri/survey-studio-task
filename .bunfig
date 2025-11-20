@@ -1,0 +1,34 @@
+[install]
+# Save exact versions
+saveExact = true
+
+# Faster / safer dependency resolution
+frozenLockfile = false
+
+# Ensure consistent behaviour across machines
+peer = true
+
+disableNpm = true
+disableYarn = true
+disablePnpm = true
+
+[run]
+# If Bun crashes, show pretty diagnostics
+hotReload = true
+
+# Increase script timeout for large migrations/builds
+timeout = 60_000
+
+[build]
+# Keep bundle sizes small
+minify = true
+sourcemap = "external"
+target = "browser"
+
+[dev]
+# Auto-reload on file change
+hot = true
+
+[log]
+# Clean console output
+level = "info"

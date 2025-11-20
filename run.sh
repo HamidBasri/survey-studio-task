@@ -2,7 +2,7 @@
 
 # -------------------------------------------------------------
 # Minimal and user-friendly project command wrapper
-# Usage: ./project.sh <command>
+# Usage: ./run.sh <command>
 # -------------------------------------------------------------
 
 set -e
@@ -11,7 +11,7 @@ COMMAND=$1
 
 print_help() {
   echo ""
-  echo "Usage: ./project.sh <command>"
+  echo "Usage: ./run.sh <command>"
   echo ""
   echo "Available commands:"
   echo "  dev           Start development environment (Docker)"

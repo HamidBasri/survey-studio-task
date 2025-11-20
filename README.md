@@ -84,15 +84,15 @@ openssl rand -base64 32
 
 Comprehensive documentation is available in the [`/docs`](./docs) directory:
 
-| Document | Description |
-|----------|-------------|
-| [**01-Overview**](./docs/01-overview.md) | Project overview, goals, and technology stack |
-| [**02-Architecture**](./docs/02-architecture.md) | System architecture, design patterns, and flow diagrams |
-| [**03-Database**](./docs/03-database.md) | Database schema, relationships, and ER diagrams |
-| [**04-API Endpoints**](./docs/04-api-endpoints.md) | Complete API reference with examples |
-| [**05-Setup Guide**](./docs/05-setup-guide.md) | Development setup, deployment, and CLI commands |
-| [**06-User Flows**](./docs/06-user-flows.md) | User journeys and feature walkthroughs |
-| [**07-Checklist & Roadmap**](./docs/07-checklist-roadmap.md) | Project status, roadmap, and AI/ML opportunities |
+| Document                                                     | Description                                             |
+| ------------------------------------------------------------ | ------------------------------------------------------- |
+| [**01-Overview**](./docs/01-overview.md)                     | Project overview, goals, and technology stack           |
+| [**02-Architecture**](./docs/02-architecture.md)             | System architecture, design patterns, and flow diagrams |
+| [**03-Database**](./docs/03-database.md)                     | Database schema, relationships, and ER diagrams         |
+| [**04-API Endpoints**](./docs/04-api-endpoints.md)           | Complete API reference with examples                    |
+| [**05-Setup Guide**](./docs/05-setup-guide.md)               | Development setup, deployment, and CLI commands         |
+| [**06-User Flows**](./docs/06-user-flows.md)                 | User journeys and feature walkthroughs                  |
+| [**07-Checklist & Roadmap**](./docs/07-checklist-roadmap.md) | Project status, roadmap, and AI/ML opportunities        |
 
 ---
 

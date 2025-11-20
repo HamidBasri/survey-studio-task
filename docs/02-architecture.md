@@ -121,11 +121,7 @@ Abstracts data access logic from business logic:
 // lib/repositories/user.repository.ts
 export class UserRepository {
   async findByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(userTable)
-      .where(eq(userTable.email, email))
-      .limit(1)
+    const [user] = await db.select().from(userTable).where(eq(userTable.email, email)).limit(1)
     return user
   }
 }
@@ -164,13 +160,15 @@ export const userService = new UserService(userRepository)
 Centralised error handling for API routes:
 
 ```typescript
-export const asyncHandler = (fn: Function) => async (...args: any[]) => {
-  try {
-    return await fn(...args)
-  } catch (error) {
-    return handleError(error)
+export const asyncHandler =
+  (fn: Function) =>
+  async (...args: any[]) => {
+    try {
+      return await fn(...args)
+    } catch (error) {
+      return handleError(error)
+    }
   }
-}
 ```
 
 ### 5. Guard Pattern
@@ -273,7 +271,7 @@ export async function requireAdmin(): Promise<AuthUser> {
 ```typescript
 const { data, isLoading, error } = useQuery({
   queryKey: ['surveys'],
-  queryFn: () => fetch('/api/surveys').then(r => r.json())
+  queryFn: () => fetch('/api/surveys').then((r) => r.json()),
 })
 ```
 
@@ -286,7 +284,7 @@ const { data, isLoading, error } = useQuery({
 ```typescript
 const useSurveyStore = create((set) => ({
   currentSurvey: null,
-  setCurrentSurvey: (survey) => set({ currentSurvey: survey })
+  setCurrentSurvey: (survey) => set({ currentSurvey: survey }),
 }))
 ```
 
@@ -419,12 +417,12 @@ Log levels: `fatal`, `error`, `warn`, `info`, `debug`, `trace`
 
 ## Technology Choices Rationale
 
-| Technology | Why Chosen |
-|------------|------------|
-| **Next.js** | Full-stack framework, excellent DX, built-in optimisations |
-| **Bun** | Fastest JS runtime, built-in bundler, excellent DX |
+| Technology      | Why Chosen                                                         |
+| --------------- | ------------------------------------------------------------------ |
+| **Next.js**     | Full-stack framework, excellent DX, built-in optimisations         |
+| **Bun**         | Fastest JS runtime, built-in bundler, excellent DX                 |
 | **Drizzle ORM** | Type-safe, lightweight, SQL-like API, excellent TypeScript support |
-| **NextAuth.js** | Industry standard, flexible, secure, well-maintained |
-| **TailwindCSS** | Rapid development, consistent design, small bundle size |
-| **Zod** | Runtime type validation, excellent TypeScript integration |
-| **PostgreSQL** | Robust, feature-rich, JSONB support, excellent for relational data |
+| **NextAuth.js** | Industry standard, flexible, secure, well-maintained               |
+| **TailwindCSS** | Rapid development, consistent design, small bundle size            |
+| **Zod**         | Runtime type validation, excellent TypeScript integration          |
+| **PostgreSQL**  | Robust, feature-rich, JSONB support, excellent for relational data |

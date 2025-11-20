@@ -59,18 +59,20 @@ N:1 = Many-to-one relationship
 
 Stores user account information with role-based access.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | UUID | PRIMARY KEY, DEFAULT random | Unique user identifier |
-| `email` | VARCHAR(255) | NOT NULL, UNIQUE | User email address |
-| `passwordHash` | VARCHAR(255) | NOT NULL | Bcrypt hashed password |
-| `role` | VARCHAR(50) | NOT NULL, DEFAULT 'user' | User role (admin/user) |
-| `createdAt` | TIMESTAMP | NOT NULL, DEFAULT NOW() | Account creation timestamp |
+| Column         | Type         | Constraints                 | Description                |
+| -------------- | ------------ | --------------------------- | -------------------------- |
+| `id`           | UUID         | PRIMARY KEY, DEFAULT random | Unique user identifier     |
+| `email`        | VARCHAR(255) | NOT NULL, UNIQUE            | User email address         |
+| `passwordHash` | VARCHAR(255) | NOT NULL                    | Bcrypt hashed password     |
+| `role`         | VARCHAR(50)  | NOT NULL, DEFAULT 'user'    | User role (admin/user)     |
+| `createdAt`    | TIMESTAMP    | NOT NULL, DEFAULT NOW()     | Account creation timestamp |
 
 **Indexes:**
+
 - `user_role_idx` on `role` (for role-based queries)
 
 **TypeScript Type:**
+
 ```typescript
 type User = {
   id: string
@@ -87,21 +89,23 @@ type User = {
 
 Stores survey metadata and configuration.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | UUID | PRIMARY KEY, DEFAULT random | Unique survey identifier |
-| `title` | VARCHAR(255) | NOT NULL | Survey title |
-| `config` | JSONB | NOT NULL | Survey configuration (questions, validation) |
-| `visibility` | VARCHAR(20) | NOT NULL, DEFAULT 'private' | Survey visibility (public/private) |
-| `creatorId` | UUID | NOT NULL, REFERENCES user(id) | Survey creator (admin) |
-| `createdAt` | TIMESTAMP | NOT NULL, DEFAULT NOW() | Survey creation timestamp |
+| Column       | Type         | Constraints                   | Description                                  |
+| ------------ | ------------ | ----------------------------- | -------------------------------------------- |
+| `id`         | UUID         | PRIMARY KEY, DEFAULT random   | Unique survey identifier                     |
+| `title`      | VARCHAR(255) | NOT NULL                      | Survey title                                 |
+| `config`     | JSONB        | NOT NULL                      | Survey configuration (questions, validation) |
+| `visibility` | VARCHAR(20)  | NOT NULL, DEFAULT 'private'   | Survey visibility (public/private)           |
+| `creatorId`  | UUID         | NOT NULL, REFERENCES user(id) | Survey creator (admin)                       |
+| `createdAt`  | TIMESTAMP    | NOT NULL, DEFAULT NOW()       | Survey creation timestamp                    |
 
 **Indexes:**
+
 - `survey_title_idx` on `title` (for search)
 - `survey_visibility_idx` on `visibility` (for filtering)
 - `survey_creator_idx` on `creatorId` (for creator lookups)
 
 **TypeScript Type:**
+
 ```typescript
 type Survey = {
   id: string
@@ -114,6 +118,7 @@ type Survey = {
 ```
 
 **Survey Config Schema (JSONB):**
+
 ```typescript
 type SurveyConfig = {
   title: string
@@ -121,13 +126,31 @@ type SurveyConfig = {
 }
 
 type Question =
-  | { type: 'text', name: string, label: string, validation?: Validation }
-  | { type: 'textarea', name: string, label: string, validation?: Validation }
-  | { type: 'multiple_choice', name: string, label: string, options: string[], validation?: Validation }
-  | { type: 'multiple_select', name: string, label: string, options: string[], validation?: Validation }
-  | { type: 'multiple_select_with_other', name: string, label: string, options: string[], validation?: Validation }
-  | { type: 'rating', name: string, label: string, scale: number, validation?: Validation }
-  | { type: 'yes_no', name: string, label: string, validation?: Validation }
+  | { type: 'text'; name: string; label: string; validation?: Validation }
+  | { type: 'textarea'; name: string; label: string; validation?: Validation }
+  | {
+      type: 'multiple_choice'
+      name: string
+      label: string
+      options: string[]
+      validation?: Validation
+    }
+  | {
+      type: 'multiple_select'
+      name: string
+      label: string
+      options: string[]
+      validation?: Validation
+    }
+  | {
+      type: 'multiple_select_with_other'
+      name: string
+      label: string
+      options: string[]
+      validation?: Validation
+    }
+  | { type: 'rating'; name: string; label: string; scale: number; validation?: Validation }
+  | { type: 'yes_no'; name: string; label: string; validation?: Validation }
 
 type Validation = {
   required?: boolean
@@ -144,20 +167,22 @@ type Validation = {
 
 Stores survey responses from users.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | UUID | PRIMARY KEY, DEFAULT random | Unique response identifier |
-| `surveyId` | UUID | NOT NULL, REFERENCES survey(id) | Associated survey |
-| `userId` | UUID | REFERENCES user(id) ON DELETE SET NULL | Respondent (nullable for anonymous) |
-| `answers` | JSONB | NOT NULL | Response answers as key-value pairs |
-| `createdAt` | TIMESTAMP | NOT NULL, DEFAULT NOW() | Response submission timestamp |
+| Column      | Type      | Constraints                            | Description                         |
+| ----------- | --------- | -------------------------------------- | ----------------------------------- |
+| `id`        | UUID      | PRIMARY KEY, DEFAULT random            | Unique response identifier          |
+| `surveyId`  | UUID      | NOT NULL, REFERENCES survey(id)        | Associated survey                   |
+| `userId`    | UUID      | REFERENCES user(id) ON DELETE SET NULL | Respondent (nullable for anonymous) |
+| `answers`   | JSONB     | NOT NULL                               | Response answers as key-value pairs |
+| `createdAt` | TIMESTAMP | NOT NULL, DEFAULT NOW()                | Response submission timestamp       |
 
 **Indexes:**
+
 - `response_survey_idx` on `surveyId` (for survey lookups)
 - `response_user_idx` on `userId` (for user response history)
 - `response_created_idx` on `createdAt` (for time-based queries)
 
 **TypeScript Type:**
+
 ```typescript
 type Response = {
   id: string
@@ -169,6 +194,7 @@ type Response = {
 ```
 
 **Answers Structure (JSONB):**
+
 ```json
 {
   "name": "John Doe",
@@ -185,19 +211,21 @@ type Response = {
 
 Junction table for assigning private surveys to specific users.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | UUID | PRIMARY KEY, DEFAULT random | Unique assignment identifier |
-| `surveyId` | UUID | NOT NULL, REFERENCES survey(id) ON DELETE CASCADE | Assigned survey |
-| `userId` | UUID | NOT NULL, REFERENCES user(id) ON DELETE CASCADE | Assigned user |
-| `assignedAt` | TIMESTAMP | NOT NULL, DEFAULT NOW() | Assignment timestamp |
+| Column       | Type      | Constraints                                       | Description                  |
+| ------------ | --------- | ------------------------------------------------- | ---------------------------- |
+| `id`         | UUID      | PRIMARY KEY, DEFAULT random                       | Unique assignment identifier |
+| `surveyId`   | UUID      | NOT NULL, REFERENCES survey(id) ON DELETE CASCADE | Assigned survey              |
+| `userId`     | UUID      | NOT NULL, REFERENCES user(id) ON DELETE CASCADE   | Assigned user                |
+| `assignedAt` | TIMESTAMP | NOT NULL, DEFAULT NOW()                           | Assignment timestamp         |
 
 **Indexes:**
+
 - `assign_survey_idx` on `surveyId` (for survey assignments)
 - `assign_user_idx` on `userId` (for user assignments)
 - `assign_unique_survey_user_idx` UNIQUE on (`surveyId`, `userId`) (prevent duplicates)
 
 **TypeScript Type:**
+
 ```typescript
 type SurveyAssignment = {
   id: string
@@ -263,6 +291,7 @@ Private surveys can be assigned to multiple users, and users can have multiple a
 ### Common Queries
 
 **Get user's assigned surveys:**
+
 ```sql
 SELECT s.*
 FROM survey s
@@ -272,6 +301,7 @@ ORDER BY s.createdAt DESC;
 ```
 
 **Get survey with response count:**
+
 ```sql
 SELECT s.*, COUNT(r.id) as responseCount
 FROM survey s
@@ -281,6 +311,7 @@ GROUP BY s.id;
 ```
 
 **Check if user submitted response:**
+
 ```sql
 SELECT EXISTS(
   SELECT 1 FROM response
@@ -308,6 +339,7 @@ bunx drizzle-kit studio
 ### Migration Files
 
 Located in `/drizzle/` directory:
+
 - `0000_chemical_mad_thinker.sql` - Initial schema
 - `meta/` - Migration metadata
 
@@ -321,13 +353,13 @@ All tables use UUID primary keys with `defaultRandom()` for distributed systems 
 
 ### Foreign Keys
 
-| Constraint | From | To | On Delete |
-|------------|------|-----|-----------|
-| `survey_creatorId_fkey` | `survey.creatorId` | `user.id` | NO ACTION |
-| `response_surveyId_fkey` | `response.surveyId` | `survey.id` | NO ACTION |
-| `response_userId_fkey` | `response.userId` | `user.id` | SET NULL |
-| `survey_assignment_surveyId_fkey` | `survey_assignment.surveyId` | `survey.id` | CASCADE |
-| `survey_assignment_userId_fkey` | `survey_assignment.userId` | `user.id` | CASCADE |
+| Constraint                        | From                         | To          | On Delete |
+| --------------------------------- | ---------------------------- | ----------- | --------- |
+| `survey_creatorId_fkey`           | `survey.creatorId`           | `user.id`   | NO ACTION |
+| `response_surveyId_fkey`          | `response.surveyId`          | `survey.id` | NO ACTION |
+| `response_userId_fkey`            | `response.userId`            | `user.id`   | SET NULL  |
+| `survey_assignment_surveyId_fkey` | `survey_assignment.surveyId` | `survey.id` | CASCADE   |
+| `survey_assignment_userId_fkey`   | `survey_assignment.userId`   | `user.id`   | CASCADE   |
 
 ### Unique Constraints
 

@@ -78,7 +78,6 @@ const EXAMPLE_SURVEY_JSON = `{
 
 export function ExampleJsonUsage() {
   const [jsonInput, setJsonInput] = useState(EXAMPLE_SURVEY_JSON)
-  const [error, setError] = useState<string | null>(null)
   const [submittedData, setSubmittedData] = useState<SurveyFormValues | null>(null)
 
   // Parse the JSON configuration
@@ -91,7 +90,6 @@ export function ExampleJsonUsage() {
 
   const handleJsonChange = (value: string) => {
     setJsonInput(value)
-    setError(null)
     setSubmittedData(null)
   }
 
@@ -109,7 +107,6 @@ export function ExampleJsonUsage() {
         <Button
           onClick={() => {
             setJsonInput(EXAMPLE_SURVEY_JSON)
-            setError(null)
             setSubmittedData(null)
           }}
           variant="outline"

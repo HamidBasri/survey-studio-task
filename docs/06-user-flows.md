@@ -4,10 +4,10 @@
 
 Survey Studio has two primary user roles:
 
-| Role | Permissions |
-|------|-------------|
+| Role      | Permissions                                                                    |
+| --------- | ------------------------------------------------------------------------------ |
 | **Admin** | Create, edit, delete surveys; view all responses; assign surveys; manage users |
-| **User** | View assigned/public surveys; submit responses; view own submissions |
+| **User**  | View assigned/public surveys; submit responses; view own submissions           |
 
 ---
 
@@ -520,11 +520,11 @@ Each question can have validation:
 
 ```typescript
 validation: {
-  required: boolean           // Must answer
-  minLength: number          // Minimum text length
-  maxLength: number          // Maximum text length
-  minChoices: number         // Minimum selections (multi-select)
-  maxChoices: number         // Maximum selections (multi-select)
+  required: boolean // Must answer
+  minLength: number // Minimum text length
+  maxLength: number // Maximum text length
+  minChoices: number // Minimum selections (multi-select)
+  maxChoices: number // Maximum selections (multi-select)
 }
 ```
 
