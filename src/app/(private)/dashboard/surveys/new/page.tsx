@@ -150,17 +150,17 @@ export default function NewSurveyPage() {
       <div className="flex h-full flex-col gap-4 overflow-hidden p-4 lg:flex-row lg:gap-6 lg:p-6">
         {/* JSON Editor Section */}
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-200/60 bg-white shadow-sm ring-1 ring-gray-900/5">
-            <div className="border-b border-gray-100 px-6 py-4">
-              <h2 className="text-base font-semibold text-gray-900">JSON Configuration</h2>
-              <p className="mt-1 text-sm text-gray-500">Define your survey structure</p>
+          <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm ring-1 ring-gray-900/5">
+            <div className="border-b border-border px-6 py-4">
+              <h2 className="text-base font-semibold text-foreground">JSON Configuration</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Define your survey structure</p>
             </div>
 
-            <div className="relative flex min-h-0 flex-1 overflow-hidden bg-gray-50/50 font-mono text-sm">
+            <div className="relative flex min-h-0 flex-1 overflow-hidden bg-background/60 font-mono text-sm">
               <div
                 ref={lineNumbersRef}
                 aria-hidden="true"
-                className="h-full shrink-0 select-none overflow-hidden border-r border-gray-200/60 bg-gray-100/50 px-3 py-4 text-right text-xs text-gray-400"
+                className="h-full shrink-0 select-none overflow-hidden border-r border-border bg-muted px-3 py-4 text-right text-xs text-muted-foreground"
               >
                 {lines.map((_, index) => {
                   const lineNumber = index + 1
@@ -202,13 +202,13 @@ export default function NewSurveyPage() {
                   }, 400)
                 }}
                 onScroll={handleTextareaScroll}
-                className="flex-1 min-h-0 resize-none overflow-y-auto border-0 bg-transparent px-4 py-4 text-sm leading-6 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0"
+                className="flex-1 min-h-0 resize-none overflow-y-auto border-0 bg-transparent px-4 py-4 text-sm leading-6 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
                 placeholder="Enter your survey JSON configuration..."
                 spellCheck={false}
               />
             </div>
 
-            <div className="border-t border-gray-100 px-6 py-4 space-y-4">
+            <div className="border-t border-border px-6 py-4 space-y-4">
               <SurveyVisibilitySelector
                 visibility={visibility}
                 onVisibilityChange={(value) => {
@@ -263,21 +263,23 @@ export default function NewSurveyPage() {
 
               {/* Validation Status */}
               {parseError && (
-                <div className="mt-4 rounded-lg border border-red-200/60 bg-red-50/50 p-4">
+                <div className="mt-4 rounded-lg border border-red-200/60 bg-red-50/50 p-4 dark:border-red-900/60 dark:bg-red-950/40">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-5 w-5 shrink-0 text-red-500" />
                     <div className="flex-1">
-                      <h3 className="text-sm font-medium text-red-800">Validation Error</h3>
-                      <pre className="mt-2 whitespace-pre-wrap text-xs text-red-700">
+                      <h3 className="text-sm font-medium text-red-800 dark:text-red-100">
+                        Validation Error
+                      </h3>
+                      <pre className="mt-2 whitespace-pre-wrap text-xs text-red-700 dark:text-red-300">
                         {parseError}
                       </pre>
                       {syntaxLocation && (
-                        <p className="mt-1 text-xs text-red-700">
+                        <p className="mt-1 text-xs text-red-700 dark:text-red-300">
                           Likely around line {syntaxLocation.line}, column {syntaxLocation.column}.
                         </p>
                       )}
                       {validationIssues && validationIssues.length > 0 && (
-                        <ul className="mt-2 space-y-1 text-xs text-red-700">
+                        <ul className="mt-2 space-y-1 text-xs text-red-700 dark:text-red-300">
                           {validationIssues.map((issue, index) => (
                             <li key={index}>
                               <span className="font-semibold">
@@ -294,12 +296,14 @@ export default function NewSurveyPage() {
               )}
 
               {parsedConfig && (
-                <div className="mt-4 rounded-lg border border-green-200/60 bg-green-50/50 p-4">
+                <div className="mt-4 rounded-lg border border-green-200/60 bg-green-50/50 p-4 dark:border-green-900/60 dark:bg-green-950/30">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                     <div>
-                      <h3 className="text-sm font-medium text-green-800">Valid Configuration</h3>
-                      <p className="text-xs text-green-700">
+                      <h3 className="text-sm font-medium text-green-800 dark:text-green-100">
+                        Valid Configuration
+                      </h3>
+                      <p className="text-xs text-green-700 dark:text-green-300">
                         {parsedConfig.questions.length} questions parsed successfully
                       </p>
                     </div>
@@ -312,26 +316,26 @@ export default function NewSurveyPage() {
 
         {/* Preview Section */}
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-200/60 bg-white shadow-sm ring-1 ring-gray-900/5">
-            <div className="border-b border-gray-100 px-6 py-4">
-              <h2 className="text-base font-semibold text-gray-900">Live Preview</h2>
-              <p className="mt-1 text-sm text-gray-500">See how your survey will look</p>
+          <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm ring-1 ring-gray-900/5">
+            <div className="border-b border-border px-6 py-4">
+              <h2 className="text-base font-semibold text-foreground">Live Preview</h2>
+              <p className="mt-1 text-sm text-muted-foreground">See how your survey will look</p>
             </div>
 
             {!parsedConfig ? (
-              <div className="flex min-h-0 flex-1 items-center justify-center bg-gray-50/30">
+              <div className="flex min-h-0 flex-1 items-center justify-center bg-background/60">
                 <div className="text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                    <FileJson className="h-8 w-8 text-gray-400" />
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                    <FileJson className="h-8 w-8 text-muted-foreground" />
                   </div>
-                  <p className="mt-4 text-sm font-medium text-gray-900">No preview available</p>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-4 text-sm font-medium text-foreground">No preview available</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Validate your JSON to see the preview
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="min-h-0 flex-1 overflow-y-auto bg-gray-50/30 p-6">
+              <div className="min-h-0 flex-1 overflow-y-auto bg-background/60 p-6">
                 <DynamicSurveyForm
                   config={parsedConfig}
                   onSubmit={(data) => {

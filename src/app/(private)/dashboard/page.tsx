@@ -19,14 +19,14 @@ export default async function DashboardPage() {
           icon={LayoutDashboard}
           actions={
             <>
-              <div className="flex items-center gap-2 rounded-full border border-gray-200/80 bg-white px-3 py-1.5 text-xs shadow-sm">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 text-[10px] font-semibold uppercase text-white">
+              <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs shadow-sm">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[10px] font-semibold uppercase text-primary-foreground">
                   {user?.email?.[0] ?? ''}
                 </div>
-                <p className="max-w-[180px] truncate text-gray-900 sm:max-w-xs">
+                <p className="max-w-[180px] truncate text-foreground sm:max-w-xs">
                   <span className="font-medium">{user?.email}</span>
-                  <span className="mx-1 text-gray-300">•</span>
-                  <span className="capitalize text-gray-500">
+                  <span className="mx-1 text-muted-foreground">•</span>
+                  <span className="capitalize text-muted-foreground">
                     {user?.role === USER_ROLE.ADMIN ? 'Administrator' : 'Standard user'}
                   </span>
                 </p>
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
               >
                 <button
                   type="submit"
-                  className="rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:border-red-300 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                  className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:border-red-300 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-200 dark:hover:bg-red-900/60"
                 >
                   Sign Out
                 </button>

@@ -9,8 +9,8 @@ export function AdminDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Survey Management</h2>
-          <p className="mt-1 text-sm text-gray-600">Create and manage all surveys</p>
+          <h2 className="text-2xl font-bold text-foreground">Survey Management</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Create and manage all surveys</p>
         </div>
         <Link
           href="/dashboard/surveys/new"

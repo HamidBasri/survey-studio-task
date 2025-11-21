@@ -41,18 +41,18 @@ export function JsonViewerDialog({ isOpen, onClose, config, title }: JsonViewerD
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div
         ref={dialogRef}
-        className="relative w-full max-w-4xl rounded-lg bg-white shadow-xl"
+        className="relative w-full max-w-4xl rounded-lg bg-card text-card-foreground shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">JSON Configuration</h2>
-            <p className="mt-1 text-sm text-gray-600">{title}</p>
+            <h2 className="text-xl font-semibold text-foreground">JSON Configuration</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{title}</p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -61,12 +61,12 @@ export function JsonViewerDialog({ isOpen, onClose, config, title }: JsonViewerD
 
         {/* JSON Content */}
         <div className="p-6">
-          <div className="relative h-[500px] w-full overflow-y-auto rounded-md border border-gray-300 bg-gray-50 font-mono text-sm">
-            <div className="flex h-full w-full">
+          <div className="relative h-[500px] w-full overflow-y-auto rounded-md border border-border bg-background/80 font-mono text-sm">
+            <div className="flex w-full">
               <div
                 ref={lineNumbersRef}
                 aria-hidden="true"
-                className="h-full shrink-0 select-none overflow-hidden border-r border-gray-200 bg-gray-100 px-3 py-4 text-right text-xs text-gray-500"
+                className="shrink-0 select-none border-r border-border bg-muted px-3 py-4 text-right text-xs text-muted-foreground"
               >
                 {lines.map((_, index) => (
                   <div key={index} className="leading-5">
@@ -74,7 +74,7 @@ export function JsonViewerDialog({ isOpen, onClose, config, title }: JsonViewerD
                   </div>
                 ))}
               </div>
-              <pre className="h-full flex-1 overflow-y-auto px-4 py-4 text-xs leading-5">
+              <pre className="flex-1 px-4 py-4 text-xs leading-5 text-foreground">
                 <code>{jsonString}</code>
               </pre>
             </div>
@@ -86,7 +86,7 @@ export function JsonViewerDialog({ isOpen, onClose, config, title }: JsonViewerD
               onClick={() => {
                 navigator.clipboard.writeText(jsonString)
               }}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
             >
               Copy to Clipboard
             </button>

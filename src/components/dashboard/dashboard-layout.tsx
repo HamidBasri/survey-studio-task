@@ -32,7 +32,7 @@ export function DashboardLayout({
   disableMainScroll = false,
 }: DashboardLayoutProps) {
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
+    <div className="flex h-screen flex-col overflow-hidden bg-background">
       {header}
       <main className={`flex-1 ${disableMainScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         <div

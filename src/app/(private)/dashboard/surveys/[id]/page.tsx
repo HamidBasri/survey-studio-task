@@ -103,8 +103,8 @@ export default function SurveyResponsesPage() {
       >
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
-            <p className="mt-4 text-sm text-gray-600">Loading responses...</p>
+            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-border border-t-blue-600" />
+            <p className="mt-4 text-sm text-muted-foreground">Loading responses...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -116,9 +116,11 @@ export default function SurveyResponsesPage() {
       <DashboardLayout
         header={<DashboardHeader title="Survey Responses" icon={ClipboardList} showBackButton />}
       >
-        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-          <p className="text-sm font-medium text-red-800">Failed to load responses</p>
-          <p className="mt-1 text-xs text-red-600">{error}</p>
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-900/60 dark:bg-red-950/40">
+          <p className="text-sm font-medium text-red-800 dark:text-red-100">
+            Failed to load responses
+          </p>
+          <p className="mt-1 text-xs text-red-600 dark:text-red-300">{error}</p>
         </div>
       </DashboardLayout>
     )
@@ -141,9 +143,9 @@ export default function SurveyResponsesPage() {
     >
       {/* Responses List */}
       {data.responses.length === 0 ? (
-        <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center sm:p-12">
-          <p className="text-lg font-semibold text-gray-900">No responses yet</p>
-          <p className="mt-2 text-sm text-gray-600">
+        <div className="rounded-lg border-2 border-dashed border-border bg-card p-8 text-center sm:p-12">
+          <p className="text-lg font-semibold text-foreground">No responses yet</p>
+          <p className="mt-2 text-sm text-muted-foreground">
             Responses will appear here once users submit the survey.
           </p>
         </div>
@@ -177,27 +179,27 @@ function ResponseCard({ response, index, surveyConfig, onDelete, isDeleting }: R
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-colors transition-shadow hover:border-blue-200 hover:shadow-md">
+    <div className="overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm transition-colors transition-shadow hover:border-blue-200 hover:shadow-md">
       {/* Response Header */}
       <div
-        className="flex cursor-pointer flex-col gap-4 border-b border-gray-100 p-4 hover:bg-gray-50 sm:flex-row sm:items-start sm:justify-between sm:p-6 sm:pb-4"
+        className="flex cursor-pointer flex-col gap-4 border-b border-border p-4 hover:bg-muted sm:flex-row sm:items-start sm:justify-between sm:p-6 sm:pb-4"
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-500/20 dark:text-blue-300">
               Response #{index + 1}
             </span>
           </div>
           {response.user && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="h-4 w-4 shrink-0" />
               <span className="truncate">{response.user.email}</span>
             </div>
           )}
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4 shrink-0" />
             <span className="text-xs sm:text-sm">
               {new Date(response.createdAt).toLocaleString('en-GB', {

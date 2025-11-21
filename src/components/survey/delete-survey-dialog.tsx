@@ -59,21 +59,21 @@ export function DeleteSurveyDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div
-        className="relative w-full max-w-lg rounded-lg bg-white shadow-xl"
+        className="relative w-full max-w-lg rounded-lg bg-card text-card-foreground shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-300" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">Delete Survey</h2>
+            <h2 className="text-xl font-semibold text-foreground">Delete Survey</h2>
           </div>
           <button
             onClick={onClose}
             disabled={isDeleting}
-            className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -82,14 +82,16 @@ export function DeleteSurveyDialog({
 
         {/* Content */}
         <div className="px-6 py-4">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-foreground">
             You are about to permanently delete the survey{' '}
             <strong>&quot;{surveyTitle}&quot;</strong>.
           </p>
 
-          <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-4">
-            <p className="text-sm font-semibold text-red-800">This action cannot be undone!</p>
-            <ul className="mt-2 list-inside list-disc space-y-1 text-xs text-red-700">
+          <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-900/60 dark:bg-red-950/40">
+            <p className="text-sm font-semibold text-red-800 dark:text-red-100">
+              This action cannot be undone!
+            </p>
+            <ul className="mt-2 list-inside list-disc space-y-1 text-xs text-red-700 dark:text-red-300">
               <li>The survey will be permanently deleted</li>
               <li>
                 All <strong>{responseCount}</strong>{' '}
@@ -100,7 +102,7 @@ export function DeleteSurveyDialog({
           </div>
 
           <div className="mt-6">
-            <label htmlFor="confirm-text" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="confirm-text" className="block text-sm font-medium text-foreground">
               Type <strong>DELETE</strong> to confirm
             </label>
             <input
@@ -109,7 +111,7 @@ export function DeleteSurveyDialog({
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
               disabled={isDeleting}
-              className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+              className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:cursor-not-allowed disabled:bg-muted"
               placeholder="Type DELETE"
               autoComplete="off"
             />
@@ -117,11 +119,11 @@ export function DeleteSurveyDialog({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 border-t border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
           <button
             onClick={onClose}
             disabled={isDeleting}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>

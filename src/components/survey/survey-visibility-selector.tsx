@@ -48,31 +48,33 @@ export function SurveyVisibilitySelector({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label className="text-xs font-medium text-gray-700">Survey visibility</Label>
+        <Label className="text-xs font-medium text-muted-foreground">Survey visibility</Label>
         <RadioGroup
           value={visibility}
           onValueChange={(value) => onVisibilityChange(value as SurveyVisibility)}
           className="grid gap-2 sm:grid-cols-2"
         >
-          <div className="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <div className="flex items-start gap-3 rounded-lg border border-border bg-card px-3 py-2.5">
             <RadioGroupItem id="visibility-public" value="public" className="mt-1" />
             <Label
               htmlFor="visibility-public"
-              className="space-y-0.5 text-sm font-medium text-gray-900"
+              className="space-y-0.5 text-sm font-medium text-foreground"
             >
               <span>Public</span>
-              <p className="text-xs font-normal text-gray-500">All users can access this survey.</p>
+              <p className="text-xs font-normal text-muted-foreground">
+                All users can access this survey.
+              </p>
             </Label>
           </div>
 
-          <div className="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5">
+          <div className="flex items-start gap-3 rounded-lg border border-border bg-card px-3 py-2.5">
             <RadioGroupItem id="visibility-private" value="private" className="mt-1" />
             <Label
               htmlFor="visibility-private"
-              className="space-y-0.5 text-sm font-medium text-gray-900"
+              className="space-y-0.5 text-sm font-medium text-foreground"
             >
               <span>Private</span>
-              <p className="text-xs font-normal text-gray-500">
+              <p className="text-xs font-normal text-muted-foreground">
                 Only selected users will be able to access this survey.
               </p>
             </Label>
@@ -82,16 +84,16 @@ export function SurveyVisibilitySelector({
 
       {visibility === 'private' && (
         <div className="space-y-2">
-          <Label className="text-xs font-medium text-gray-700">Assigned users</Label>
+          <Label className="text-xs font-medium text-muted-foreground">Assigned users</Label>
 
           {isLoadingUsers ? (
-            <p className="text-xs text-gray-500">Loading users…</p>
+            <p className="text-xs text-muted-foreground">Loading users…</p>
           ) : usersError ? (
             <p className="text-xs text-red-600">Failed to load users. Please try again later.</p>
           ) : users.length === 0 ? (
-            <p className="text-xs text-gray-500">No users available to assign.</p>
+            <p className="text-xs text-muted-foreground">No users available to assign.</p>
           ) : (
-            <div className="max-h-40 space-y-1 overflow-y-auto rounded-md border border-gray-200 bg-white p-2 text-sm">
+            <div className="max-h-40 space-y-1 overflow-y-auto rounded-md border border-border bg-card p-2 text-sm">
               {users.map((user) => {
                 const checked = selectedUserIds.includes(user.id)
 
@@ -106,9 +108,9 @@ export function SurveyVisibilitySelector({
                         onCheckedChange={(value) => handleToggleUser(user.id, value)}
                         aria-label={`Assign ${user.email}`}
                       />
-                      <span className="text-xs font-medium text-gray-800">{user.email}</span>
+                      <span className="text-xs font-medium text-foreground">{user.email}</span>
                     </div>
-                    <span className="text-[11px] uppercase tracking-wide text-gray-400">
+                    <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                       {user.role}
                     </span>
                   </label>
