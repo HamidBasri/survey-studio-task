@@ -10,8 +10,8 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200/60 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between sm:h-20">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
                 Dashboard
@@ -21,13 +21,17 @@ export default async function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-700">{user?.email}</p>
-                  <p className="text-xs text-gray-500">
-                    {user?.role === USER_ROLE.ADMIN ? '👑 Admin' : '👤 User'}
-                  </p>
+              <div className="flex items-center gap-2 rounded-full border border-gray-200/80 bg-white px-3 py-1.5 text-xs shadow-sm">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 text-[10px] font-semibold uppercase text-white">
+                  {user?.email?.[0] ?? ''}
                 </div>
+                <p className="truncate text-gray-900 max-w-[180px] sm:max-w-xs">
+                  <span className="font-medium">{user?.email}</span>
+                  <span className="mx-1 text-gray-300">•</span>
+                  <span className="capitalize text-gray-500">
+                    {user?.role === USER_ROLE.ADMIN ? 'Administrator' : 'Standard user'}
+                  </span>
+                </p>
               </div>
               <form
                 action={async () => {

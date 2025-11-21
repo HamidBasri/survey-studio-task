@@ -79,7 +79,7 @@ function LoginPageContent() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete="on">
           <FormField
             control={form.control}
             name="email"
@@ -90,7 +90,14 @@ function LoginPageContent() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" autoComplete="email" className="h-11" {...field} />
+                  <Input
+                    type="email"
+                    autoComplete="username"
+                    className="h-11"
+                    {...field}
+                    name="email"
+                    id="email"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -113,6 +120,8 @@ function LoginPageContent() {
                       autoComplete="current-password"
                       className="h-11 pr-10"
                       {...field}
+                      name="password"
+                      id="password"
                     />
                     <button
                       type="button"
