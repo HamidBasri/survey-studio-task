@@ -154,7 +154,7 @@ Survey Studio uses Next.js App Router, combining frontend and backend in a singl
 3. **Separation of Concerns**: Clear separation between UI, business logic, and data access
 4. **SOLID Principles**: Single responsibility, dependency injection, interface segregation
 5. **DRY (Don't Repeat Yourself)**: Shared utilities and reusable components
-6. **Clean Code**: Descriptive naming (British English), minimal complexity
+6. **Clean Code**: Descriptive naming, minimal complexity
 
 ## Next Steps
 
