@@ -4,6 +4,13 @@
 
 Survey Studio provides a RESTful API built on Next.js API Routes. All endpoints follow REST conventions and return JSON responses.
 
+Internally, every endpoint follows the same layered flow:
+
+- **API Route** – parses/validates input, checks authentication/authorisation, and maps HTTP to service calls.
+- **Service** – contains business rules, orchestration, and error handling (no direct database access).
+- **Repository** – encapsulates all Drizzle ORM queries, built from shared functional utilities.
+- **Database** – PostgreSQL 18 as the single source of truth.
+
 **Base URL**: `http://localhost:3000/api` (development)
 
 ## Authentication
@@ -395,7 +402,7 @@ Submit a survey response.
 
 #### GET `/api/surveys/[id]/responses`
 
-Get all responses for a specific survey.
+Get all responses for a specific survey, including basic survey metadata and user info.
 
 **Access**: Admin only
 
@@ -407,11 +414,24 @@ Get all responses for a specific survey.
 
 ```json
 {
+  "survey": {
+    "id": "770e8400-e29b-41d4-a716-446655440002",
+    "title": "Customer Satisfaction Survey",
+    "config": {
+      "title": "Customer Satisfaction Survey",
+      "questions": [
+        {
+          "type": "rating",
+          "name": "satisfaction",
+          "label": "How satisfied are you?",
+          "scale": 5
+        }
+      ]
+    }
+  },
   "responses": [
     {
       "id": "990e8400-e29b-41d4-a716-446655440004",
-      "surveyId": "770e8400-e29b-41d4-a716-446655440002",
-      "userId": "660e8400-e29b-41d4-a716-446655440001",
       "answers": {
         "name": "John Doe",
         "engagement": 8,
@@ -420,11 +440,11 @@ Get all responses for a specific survey.
       },
       "createdAt": "2025-11-18T13:00:00.000Z",
       "user": {
+        "id": "660e8400-e29b-41d4-a716-446655440001",
         "email": "john.doe@example.com"
       }
     }
-  ],
-  "count": 1
+  ]
 }
 ```
 

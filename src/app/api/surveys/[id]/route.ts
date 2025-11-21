@@ -1,10 +1,9 @@
 import { getCurrentUser } from '@/lib/auth'
 import { USER_ROLE } from '@/lib/config/user'
-import { db } from '@/lib/db'
-import { response, survey } from '@/lib/db/schema'
-import { asyncHandler, AuthenticationError, AuthorisationError } from '@/lib/errors'
+import { asyncHandler, AuthenticationError, AuthorisationError, NotFoundError } from '@/lib/errors'
 import { createLogger } from '@/lib/logger'
-import { eq } from 'drizzle-orm'
+import { responseService } from '@/lib/services/response.service'
+import { surveyService } from '@/lib/services/survey.service'
 import { NextResponse } from 'next/server'
 
 const surveyLogger = createLogger({ scope: 'api:surveys:id' })
@@ -34,31 +33,28 @@ export const DELETE = asyncHandler(
 
     surveyLogger.info({ userId: currentUser.id, surveyId }, 'Deleting survey and all responses')
 
-    // First, check if survey exists
-    const [existingSurvey] = await db.select().from(survey).where(eq(survey.id, surveyId)).limit(1)
+    // Get response count before deletion
+    const responseCount = await responseService.getResponseCount(surveyId)
 
-    if (!existingSurvey) {
-      surveyLogger.warn({ surveyId }, 'Survey not found')
-      return NextResponse.json({ error: 'Survey not found' }, { status: 404 })
+    // Delete survey using service (this will cascade delete responses and assignments)
+    try {
+      await surveyService.deleteSurvey(surveyId, currentUser.id)
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        surveyLogger.warn({ surveyId }, 'Survey not found')
+        return NextResponse.json({ error: 'Survey not found' }, { status: 404 })
+      }
+      throw error
     }
 
-    // Count responses before deletion
-    const responseCount = await db.select().from(response).where(eq(response.surveyId, surveyId))
-
-    // Delete all responses for this survey
-    await db.delete(response).where(eq(response.surveyId, surveyId))
-
-    // Delete the survey (surveyAssignments will cascade delete automatically)
-    await db.delete(survey).where(eq(survey.id, surveyId))
-
     surveyLogger.info(
-      { surveyId, userId: currentUser.id, responsesDeleted: responseCount.length },
+      { surveyId, userId: currentUser.id, responsesDeleted: responseCount },
       'Survey deleted successfully',
     )
 
     return NextResponse.json({
       message: 'Survey and all responses deleted successfully',
-      deletedResponses: responseCount.length,
+      deletedResponses: responseCount,
     })
   },
 )

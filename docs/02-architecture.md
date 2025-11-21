@@ -115,47 +115,176 @@ src/
 
 ### 1. Repository Pattern
 
-Abstracts data access logic from business logic:
+The repository layer abstracts **all direct database access** behind a small set of
+**functional, composable utilities**. This keeps services free of Drizzle details and
+makes data access easy to test and reuse.
+
+#### Functional composition with base utilities
+
+All repositories are simple objects built from shared helpers in
+`src/lib/repositories/base/base.repo.ts`:
 
 ```typescript
-// lib/repositories/user.repository.ts
-export class UserRepository {
-  async findByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(userTable).where(eq(userTable.email, email)).limit(1)
-    return user
+// src/lib/repositories/base/base.repo.ts (excerpt)
+export const createRepoLogger = (repoName: string) =>
+  createLogger({ scope: `repo:${repoName}` })
+
+export const findById =
+  <T>(table: PgTable, idColumn: PgColumn, repoName: string) =>
+  async (id: ID): Promise<T | null> => {
+    const logger = createRepoLogger(repoName)
+    const rows = await db.select().from(table).where(eq(idColumn, id)).limit(1)
+    const result = rows[0] as T | undefined
+    logger.debug({ id, found: !!result }, `${repoName}.byId`)
+    return result ?? null
   }
+
+export const deleteById =
+  <T>(table: PgTable, idColumn: PgColumn, repoName: string) =>
+  async (id: ID): Promise<T | null> => {
+    const logger = createRepoLogger(repoName)
+    const [deleted] = await db
+      .delete(table)
+      .where(eq(idColumn, id))
+      .returning()
+
+    const result = deleted as T | undefined
+    logger.info({ id, deleted: !!result }, `${repoName}.delete`)
+    return result ?? null
+  }
+```
+
+Each concrete repository composes these helpers with domain-specific queries. For
+example, the `userRepo`:
+
+```typescript
+// src/lib/repositories/user.repo.ts (simplified)
+import { db } from '@/lib/db'
+import { user } from '@/lib/db/schema/user'
+import type { ID } from '@/lib/db/types'
+import { eq } from 'drizzle-orm'
+import {
+  buildOrderBy,
+  checkExists,
+  countEntities,
+  createRepoLogger,
+  deleteById,
+  findById,
+  findByIds,
+} from './base'
+
+const REPO_NAME = 'user'
+const logger = createRepoLogger(REPO_NAME)
+
+export const userRepo = {
+  // Base-composed operations
+  byId: findById<typeof user.$inferSelect>(user, user.id, REPO_NAME),
+  byIds: findByIds<typeof user.$inferSelect>(user, user.id, REPO_NAME),
+  exists: checkExists(user, user.id, REPO_NAME),
+  count: countEntities(user, REPO_NAME),
+  delete: deleteById<typeof user.$inferSelect>(user, user.id, REPO_NAME),
+
+  // Domain-specific operations
+  async byEmail(email: string) {
+    try {
+      const rows = await db.select().from(user).where(eq(user.email, email)).limit(1)
+      const result = rows[0] ?? null
+      logger.debug({ email, found: !!result }, 'byEmail')
+      return result
+    } catch (error) {
+      logger.error({ error, email }, 'byEmail failed')
+      throw error
+    }
+  },
+
+  async listAll() {
+    try {
+      const rows = await db
+        .select({ id: user.id, email: user.email, role: user.role, createdAt: user.createdAt })
+        .from(user)
+        .orderBy(buildOrderBy(user.createdAt))
+      logger.debug({ count: rows.length }, 'listAll')
+      return rows
+    } catch (error) {
+      logger.error({ error }, 'listAll failed')
+      throw error
+    }
+  },
 }
 ```
+
+**Key properties of this pattern:**
+
+- **Pure helpers**: base functions (`findById`, `deleteById`, `checkExists`, `countEntities`,
+  `buildOrderBy`, etc.) are stateless and easily testable.
+- **Consistent logging**: all repositories use `createRepoLogger` with structured logs
+  (`debug`/`info`/`error`) and contextual data (IDs, counts, etc.).
+- **Clear separation**: services never talk to Drizzle directly; they depend only on repository
+  functions, which in turn use the base utilities.
+- **Type-safe**: repositories leverage Drizzle’s `table.$inferSelect` for strong typing.
 
 ### 2. Service Pattern
 
-Encapsulates business logic and coordinates between repositories:
+Services encapsulate **business rules** and orchestrate calls across one or more
+repositories. They are implemented as **functional modules** (plain objects with
+async methods), which keeps them easy to test and avoids tight coupling to any
+particular DI framework.
 
 ```typescript
-// lib/services/user.service.ts
-export class UserService {
-  async authenticate(email: string, password: string): Promise<AuthUser | null> {
-    const user = await this.userRepo.findByEmail(email)
-    if (!user) return null
+// lib/services/user.service.ts (simplified)
+import { hashPassword, verifyPassword } from '@/lib/auth/hash'
+import type { AuthUser } from '@/lib/auth/types'
+import type { UserRole } from '@/lib/config/user'
+import type { ID } from '@/lib/db/types'
+import { AppError, ConflictError, InternalError, ValidationError } from '@/lib/errors'
+import { createLogger } from '@/lib/logger'
+import { userRepo } from '@/lib/repositories/user.repo'
 
-    const isValid = await verifyPassword(password, user.passwordHash)
-    if (!isValid) return null
+const userServiceLogger = createLogger({ scope: 'userService' })
 
-    return { id: user.id, email: user.email, role: user.role }
-  }
+export const userService = {
+  async register(email: string, password: string, role: UserRole = 'user'): Promise<AuthUser> {
+    try {
+      const normalisedEmail = email.trim().toLowerCase()
+
+      // Validate inputs with domain-specific rules
+      if (!normalisedEmail) {
+        throw new ValidationError('Email is required', { code: 'EMAIL_REQUIRED' })
+      }
+
+      // Delegate persistence to repositories
+      const existing = await userRepo.byEmail(normalisedEmail)
+      if (existing) {
+        throw new ConflictError('Email is already in use', { code: 'EMAIL_TAKEN' })
+      }
+
+      const passwordHash = await hashPassword(password)
+      const created = await userRepo.create(normalisedEmail, passwordHash, role)
+
+      userServiceLogger.info({ userId: created.id, role: created.role }, 'User registered')
+
+      // Map repository entity → AuthUser DTO
+      return { id: created.id as ID, email: created.email, role: created.role }
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw err
+      }
+
+      userServiceLogger.error({ err }, 'User registration failed')
+      throw new InternalError('User registration failed', { code: 'USER_REGISTER_FAILED' })
+    }
+  },
 }
 ```
 
-### 3. Dependency Injection
+**Key properties of this pattern:**
 
-Services and repositories are instantiated as singletons:
+- Services depend only on repositories and shared helpers (no direct Drizzle usage).
+- Each method has a **clear input/output contract** (TypeScript types + Zod in API).
+- Cross-cutting concerns (logging, error mapping, RBAC checks) are handled in one
+  place per use case, keeping API routes thin.
 
-```typescript
-// lib/services/user.service.ts
-export const userService = new UserService(userRepository)
-```
-
-### 4. Async Handler Pattern
+### 3. Async Handler Pattern
 
 Centralised error handling for API routes:
 
@@ -171,7 +300,7 @@ export const asyncHandler =
   }
 ```
 
-### 5. Guard Pattern
+### 4. Guard Pattern
 
 Authentication and authorisation guards:
 

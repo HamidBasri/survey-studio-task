@@ -1,10 +1,8 @@
 import { getCurrentUser } from '@/lib/auth'
 import { USER_ROLE } from '@/lib/config/user'
-import { db } from '@/lib/db'
-import { response, survey } from '@/lib/db/schema'
-import { asyncHandler, AuthenticationError, AuthorisationError, NotFoundError } from '@/lib/errors'
+import { asyncHandler, AuthenticationError, AuthorisationError } from '@/lib/errors'
 import { createLogger } from '@/lib/logger'
-import { and, eq } from 'drizzle-orm'
+import { responseService } from '@/lib/services/response.service'
 import { NextRequest, NextResponse } from 'next/server'
 
 const logger = createLogger({ scope: 'api:surveys:responses:delete' })
@@ -36,41 +34,8 @@ export const DELETE = asyncHandler(
 
     logger.info({ surveyId, responseId, userId: currentUser.id }, 'Deleting survey response')
 
-    // Check if survey exists and user is the creator
-    const [surveyRecord] = await db
-      .select({
-        id: survey.id,
-        creatorId: survey.creatorId,
-      })
-      .from(survey)
-      .where(eq(survey.id, surveyId))
-      .limit(1)
-
-    if (!surveyRecord) {
-      throw new NotFoundError('Survey not found')
-    }
-
-    if (surveyRecord.creatorId !== currentUser.id) {
-      logger.warn(
-        { surveyId, userId: currentUser.id, creatorId: surveyRecord.creatorId },
-        'User attempted to delete response for survey they did not create',
-      )
-      throw new AuthorisationError('You can only delete responses for surveys you created')
-    }
-
-    // Check if response exists and belongs to this survey
-    const [responseRecord] = await db
-      .select({ id: response.id })
-      .from(response)
-      .where(and(eq(response.id, responseId), eq(response.surveyId, surveyId)))
-      .limit(1)
-
-    if (!responseRecord) {
-      throw new NotFoundError('Response not found')
-    }
-
-    // Delete the response
-    await db.delete(response).where(eq(response.id, responseId))
+    // Delete response using service (checks permissions internally)
+    await responseService.deleteResponse(responseId, currentUser.id)
 
     logger.info({ surveyId, responseId }, 'Survey response deleted successfully')
 

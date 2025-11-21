@@ -1,9 +1,8 @@
 import { getCurrentUser } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { response, survey, surveyAssignment } from '@/lib/db/schema'
 import { asyncHandler, AuthenticationError } from '@/lib/errors'
 import { createLogger } from '@/lib/logger'
-import { and, desc, eq, or } from 'drizzle-orm'
+import { responseService } from '@/lib/services/response.service'
+import { surveyService } from '@/lib/services/survey.service'
 import { NextResponse } from 'next/server'
 
 const logger = createLogger({ scope: 'api:user:surveys' })
@@ -22,35 +21,18 @@ export const GET = asyncHandler(async () => {
 
   logger.info({ userId: user.id }, 'Fetching user surveys')
 
-  // Fetch surveys that are either public OR assigned to the user
-  const userSurveys = await db
-    .select({
-      id: survey.id,
-      title: survey.title,
-      config: survey.config,
-      visibility: survey.visibility,
-      creatorId: survey.creatorId,
-      createdAt: survey.createdAt,
-      assignmentId: surveyAssignment.id,
-    })
-    .from(survey)
-    .leftJoin(surveyAssignment, eq(surveyAssignment.surveyId, survey.id))
-    .where(or(eq(survey.visibility, 'public'), and(eq(surveyAssignment.userId, user.id))))
-    .orderBy(desc(survey.createdAt))
+  // Fetch public surveys and assigned surveys
+  const publicSurveys = await surveyService.listPublicSurveys()
+  const assignedSurveys = await surveyService.listAssignedSurveys(user.id)
 
-  // Remove duplicate surveys (can appear if both public and assigned)
-  const uniqueSurveys = Array.from(new Map(userSurveys.map((s) => [s.id, s])).values())
+  // Combine and deduplicate
+  const allSurveysMap = new Map()
+  publicSurveys.forEach((s) => allSurveysMap.set(s.id, s))
+  assignedSurveys.forEach((s) => allSurveysMap.set(s.id, s))
+  const uniqueSurveys = Array.from(allSurveysMap.values())
 
-  // Fetch user's responses to determine submission status
-  const userResponses = await db
-    .select({
-      surveyId: response.surveyId,
-      createdAt: response.createdAt,
-    })
-    .from(response)
-    .where(and(eq(response.userId, user.id)))
-
-  // Create a map of submitted surveys
+  // Get user's responses
+  const userResponses = await responseService.listUserResponses(user.id)
   const submittedSurveys = new Map(userResponses.map((r) => [r.surveyId, r.createdAt]))
 
   // Combine survey data with submission status
