@@ -26,10 +26,7 @@ A wrapper component that provides consistent page structure across all dashboard
 **Example:**
 
 ```tsx
-<DashboardLayout
-  header={<DashboardHeader title="My Page" />}
-  maxWidth="4xl"
->
+<DashboardLayout header={<DashboardHeader title="My Page" />} maxWidth="4xl">
   <div>Page content here</div>
 </DashboardLayout>
 ```
@@ -67,9 +64,7 @@ A consistent header component with modern styling and flexible content options.
   subtitle="Enter your survey configuration"
   icon={FileJson}
   showBackButton
-  actions={
-    <Button onClick={handleSave}>Save</Button>
-  }
+  actions={<Button onClick={handleSave}>Save</Button>}
 />
 ```
 
