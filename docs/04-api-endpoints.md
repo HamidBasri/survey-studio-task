@@ -344,6 +344,59 @@ Get surveys available to current user (public + assigned).
 
 ---
 
+#### GET `/api/user/surveys/[id]`
+
+Get a single survey available to the current user (public or assigned),
+including whether the user has already submitted a response.
+
+**Access**: Authenticated users
+
+**Parameters:**
+
+- `id` (path): Survey UUID
+
+**Response (200 OK):**
+
+```json
+{
+  "survey": {
+    "id": "770e8400-e29b-41d4-a716-446655440002",
+    "title": "Customer Satisfaction Survey",
+    "config": {
+      "title": "Customer Satisfaction Survey",
+      "questions": [
+        {
+          "type": "rating",
+          "name": "satisfaction",
+          "label": "How satisfied are you?",
+          "scale": 5
+        }
+      ]
+    },
+    "visibility": "public",
+    "creatorId": "550e8400-e29b-41d4-a716-446655440000",
+    "createdAt": "2025-11-18T10:00:00.000Z",
+    "isSubmitted": true,
+    "submittedAt": "2025-11-18T12:30:00.000Z"
+  }
+}
+```
+
+**Notes:**
+
+- The endpoint enforces visibility and assignment rules; if the user does not
+  have access, an authorisation error is returned.
+- The `config` field always contains the full `SurveyConfig` (title + questions)
+  used by the dynamic survey form renderer.
+
+**Errors:**
+
+- `401 Unauthorized` - Not authenticated
+- `403 Forbidden` - User does not have access to this survey
+- `404 Not Found` - Survey does not exist or is not accessible
+
+---
+
 ### Responses
 
 #### POST `/api/responses`

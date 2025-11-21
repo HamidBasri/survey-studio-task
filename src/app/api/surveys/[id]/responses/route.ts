@@ -31,7 +31,9 @@ export const GET = asyncHandler(
 
     logger.info({ surveyId, userId: currentUser.id }, 'Fetching survey responses')
 
-    const result = await responseService.listSurveyResponsesWithUserInfo(surveyId, currentUser.id)
+    const result = await responseService.listSurveyResponsesWithUserInfo(surveyId, currentUser.id, {
+      skipCreatorCheck: true,
+    })
 
     logger.debug(
       { surveyId, count: result.responses.length },

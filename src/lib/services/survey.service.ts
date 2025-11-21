@@ -247,26 +247,20 @@ export const surveyService = {
     }
   },
 
-  async listPublicSurveys(): Promise<SurveySummary[]> {
+  async listPublicSurveys(): Promise<readonly SurveyDetail[]> {
     try {
       const surveys = await surveyRepo.listPublic()
 
       surveyServiceLogger.debug({ count: surveys.length }, 'Public surveys listed')
 
-      return surveys.map((s) => ({
-        id: s.id,
-        title: s.title,
-        visibility: s.visibility,
-        creatorId: s.creatorId,
-        createdAt: s.createdAt,
-      }))
+      return surveys
     } catch (err) {
       surveyServiceLogger.error({ err }, 'Failed to list public surveys')
       throw new InternalError('Failed to list surveys', { code: 'SURVEY_LIST_FAILED' })
     }
   },
 
-  async listUserSurveys(userId: ID): Promise<SurveyDetail[]> {
+  async listUserSurveys(userId: ID): Promise<readonly SurveyDetail[]> {
     try {
       const surveys = await surveyRepo.byCreator(userId)
 

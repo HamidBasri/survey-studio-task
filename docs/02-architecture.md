@@ -126,8 +126,7 @@ All repositories are simple objects built from shared helpers in
 
 ```typescript
 // src/lib/repositories/base/base.repo.ts (excerpt)
-export const createRepoLogger = (repoName: string) =>
-  createLogger({ scope: `repo:${repoName}` })
+export const createRepoLogger = (repoName: string) => createLogger({ scope: `repo:${repoName}` })
 
 export const findById =
   <T>(table: PgTable, idColumn: PgColumn, repoName: string) =>
@@ -143,10 +142,7 @@ export const deleteById =
   <T>(table: PgTable, idColumn: PgColumn, repoName: string) =>
   async (id: ID): Promise<T | null> => {
     const logger = createRepoLogger(repoName)
-    const [deleted] = await db
-      .delete(table)
-      .where(eq(idColumn, id))
-      .returning()
+    const [deleted] = await db.delete(table).where(eq(idColumn, id)).returning()
 
     const result = deleted as T | undefined
     logger.info({ id, deleted: !!result }, `${repoName}.delete`)

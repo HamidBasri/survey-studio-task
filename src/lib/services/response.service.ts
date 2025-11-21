@@ -106,6 +106,7 @@ export const responseService = {
   async listSurveyResponsesWithUserInfo(
     surveyId: ID,
     requestUserId: ID,
+    options?: { skipCreatorCheck?: boolean },
   ): Promise<{
     survey: {
       id: ID
@@ -120,7 +121,9 @@ export const responseService = {
     }>
   }> {
     try {
-      const survey = await ensureSurveyForResponses(surveyId, requestUserId)
+      const survey = options?.skipCreatorCheck
+        ? await ensureSurveyExists(surveyId)
+        : await ensureSurveyForResponses(surveyId, requestUserId)
       const responses = await responseRepo.bySurvey(surveyId)
       const userEmailMap = await buildUserEmailMap(responses)
 

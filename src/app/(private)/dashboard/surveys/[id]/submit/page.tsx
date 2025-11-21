@@ -7,7 +7,7 @@ import { DynamicSurveyForm } from '@/components/survey/dynamic-survey-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useSubmitResponse, useUserSurveys } from '@/lib/hooks/use-user-surveys'
+import { useSubmitResponse, useUserSurvey } from '@/lib/hooks/use-user-surveys'
 import { AlertCircle, ArrowLeft, CheckCircle2, ClipboardEdit } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -17,11 +17,9 @@ export default function SurveySubmitPage() {
   const params = useParams()
   const surveyId = params.id as string
 
-  const { data: surveys, isLoading } = useUserSurveys()
+  const { data: survey, isLoading, isError, error } = useUserSurvey(surveyId)
   const submitResponse = useSubmitResponse()
   const [isSuccess, setIsSuccess] = useState(false)
-
-  const survey = surveys?.find((s) => s.id === surveyId)
 
   const handleSubmit = async (data: SurveyFormValues) => {
     try {
@@ -48,6 +46,33 @@ export default function SurveySubmitPage() {
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-10 w-32" />
+          </CardContent>
+        </Card>
+      </DashboardLayout>
+    )
+  }
+
+  if (isError) {
+    return (
+      <DashboardLayout
+        header={<DashboardHeader title="Submit Survey" icon={ClipboardEdit} showBackButton />}
+        maxWidth="4xl"
+      >
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="flex flex-col items-center gap-4 p-12 text-center">
+            <AlertCircle className="h-16 w-16 text-red-600" />
+            <h2 className="text-xl font-semibold text-red-900">Failed to Load Survey</h2>
+            <p className="text-sm text-red-700">
+              {error instanceof Error
+                ? error.message
+                : 'An unexpected error occurred while loading the survey.'}
+            </p>
+            <Link href="/dashboard">
+              <Button variant="outline">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Dashboard
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </DashboardLayout>
@@ -135,7 +160,7 @@ export default function SurveySubmitPage() {
     <DashboardLayout
       header={
         <DashboardHeader
-          title={survey.config.title}
+          title={survey.title}
           subtitle="Complete the survey below"
           icon={ClipboardEdit}
           showBackButton

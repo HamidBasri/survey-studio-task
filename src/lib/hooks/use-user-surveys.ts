@@ -22,6 +22,8 @@ export type SubmitResponseDto = {
 
 const USER_SURVEYS_QUERY_KEY = ['user-surveys'] as const
 
+const userSurveyQueryKey = (id: ID) => ['user-survey', id] as const
+
 /**
  * Fetch surveys available to the current user
  */
@@ -38,6 +40,24 @@ async function fetchUserSurveys(): Promise<UserSurvey[]> {
 
   const data = await response.json()
   return data.surveys
+}
+
+/**
+ * Fetch a single survey available to the current user
+ */
+async function fetchUserSurvey(id: ID): Promise<UserSurvey> {
+  const response = await fetch(`/api/user/surveys/${id}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to fetch survey' }))
+    throw new Error(error.message || 'Failed to fetch survey')
+  }
+
+  const data = await response.json()
+  return data.survey
 }
 
 /**
@@ -66,6 +86,17 @@ export function useUserSurveys() {
   return useQuery({
     queryKey: USER_SURVEYS_QUERY_KEY,
     queryFn: fetchUserSurveys,
+  })
+}
+
+/**
+ * Hook to fetch a single survey by ID for the current user
+ */
+export function useUserSurvey(id: ID) {
+  return useQuery({
+    queryKey: userSurveyQueryKey(id),
+    queryFn: () => fetchUserSurvey(id),
+    enabled: !!id,
   })
 }
 
