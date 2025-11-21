@@ -1,6 +1,8 @@
 import { requireGuest } from '@/lib/auth'
 import type { ReactNode } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 interface AuthLayoutProps {
   children: ReactNode
 }

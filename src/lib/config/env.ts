@@ -10,7 +10,9 @@ const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).optional(),
   NEXT_RUNTIME: z.string().optional(),
-  AUTH_SECRET: z.string('AUTH_SECRET is required'),
+  NEXTAUTH_URL: z.string().optional(),
+  AUTH_TRUST_HOST: z.string().optional(),
+  AUTH_SECRET: z.string().optional(),
 })
 
 const raw = EnvSchema.parse(process.env)

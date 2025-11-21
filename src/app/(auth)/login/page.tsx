@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useForm, type ControllerRenderProps } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,14 @@ type LoginFormValues = {
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
+  )
+}
+
+function LoginPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/'

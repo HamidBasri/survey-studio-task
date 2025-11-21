@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '${DB_PORT}:5432'
     volumes:
       - db_data:/var/lib/postgresql
     restart: unless-stopped
@@ -19,11 +21,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+        NODE_ENV: production
     container_name: app
     environment:
       NODE_ENV: production
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
       APP_PORT: ${APP_PORT}
+      AUTH_SECRET: ${AUTH_SECRET}
+      NEXTAUTH_URL: http://localhost:${APP_PORT}
+      AUTH_TRUST_HOST: 'true'
     ports:
       - '${APP_PORT}:${APP_PORT}'
     depends_on:

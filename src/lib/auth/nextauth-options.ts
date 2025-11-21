@@ -15,6 +15,7 @@ const CredentialsSchema = z.object({
 })
 
 export const authOptions: NextAuthConfig = {
+  // Uses env.AUTH_SECRET if provided; build will not fail if it's missing.
   secret: env.AUTH_SECRET,
   session: { strategy: 'jwt' },
 
