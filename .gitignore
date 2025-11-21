@@ -46,16 +46,6 @@ yarn-error.log*
 .vscode/
 *.code-workspace
 
-# Windsurf (AI Editor)
-.windsurfrc
-.windsurf/
-windsurf/
-
-# Cursor IDE (AI Editor)
-.cursor/
-.cursor.json
-cursor.json
-
 # ------------------------------------------------------------
 # NEXT.JS
 # ------------------------------------------------------------
