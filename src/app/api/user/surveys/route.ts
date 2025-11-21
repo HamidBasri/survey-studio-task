@@ -47,6 +47,11 @@ export const GET = asyncHandler(async () => {
     submittedAt: submittedSurveys.get(s.id) || null,
   }))
 
+  // Sort surveys from newest to oldest by creation date
+  surveysWithStatus.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  )
+
   logger.debug(
     { count: surveysWithStatus.length, userId: user.id },
     'User surveys fetched successfully',

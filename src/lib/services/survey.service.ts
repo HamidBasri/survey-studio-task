@@ -74,6 +74,11 @@ export const surveyService = {
           s.visibility === 'public' ? totalUsers : (assignmentCountMap.get(s.id) ?? 0),
       }))
 
+      // Sort surveys from newest to oldest by creation date for admin views
+      surveysWithMetadata.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+
       surveyServiceLogger.debug(
         { count: surveysWithMetadata.length },
         'Admin surveys with stats listed',
