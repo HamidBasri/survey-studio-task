@@ -19,6 +19,7 @@ export type CreateSurveyDto = {
   title: string
   config: SurveyConfig
   visibility: 'public' | 'private'
+  assignedUserIds?: ID[]
 }
 
 const SURVEYS_QUERY_KEY = ['surveys'] as const

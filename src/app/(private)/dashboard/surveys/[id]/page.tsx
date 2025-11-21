@@ -174,10 +174,15 @@ interface ResponseCardProps {
 }
 
 function ResponseCard({ response, index, surveyConfig, onDelete, isDeleting }: ResponseCardProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-colors transition-shadow hover:border-blue-200 hover:shadow-md">
       {/* Response Header */}
-      <div className="flex flex-col gap-4 border-b border-gray-100 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-6 sm:pb-4">
+      <div
+        className="flex cursor-pointer flex-col gap-4 border-b border-gray-100 p-4 hover:bg-gray-50 sm:flex-row sm:items-start sm:justify-between sm:p-6 sm:pb-4"
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
@@ -204,23 +209,34 @@ function ResponseCard({ response, index, surveyConfig, onDelete, isDeleting }: R
               })}
             </span>
           </div>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(response.id)}
-            disabled={isDeleting}
-            className="w-full gap-2 sm:w-auto"
-          >
-            <Trash2 className="h-4 w-4" />
-            {isDeleting ? 'Deleting...' : 'Delete'}
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={(event) => {
+                event.stopPropagation()
+                void onDelete(response.id)
+              }}
+              disabled={isDeleting}
+              className="w-full gap-2 sm:w-auto"
+            >
+              <Trash2 className="h-4 w-4" />
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Readonly Survey Form */}
-      <div className="p-4 pt-3 sm:p-6 sm:pt-4">
-        <DynamicSurveyForm config={surveyConfig} defaultValues={response.answers} readonly={true} />
-      </div>
+      {isOpen && (
+        <div className="p-4 pt-3 sm:p-6 sm:pt-4">
+          <DynamicSurveyForm
+            config={surveyConfig}
+            defaultValues={response.answers}
+            readonly={true}
+          />
+        </div>
+      )}
     </div>
   )
 }

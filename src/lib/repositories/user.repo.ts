@@ -1,7 +1,7 @@
 import { type UserRole } from '@/lib/config/user'
 import { db } from '@/lib/db'
 import { user } from '@/lib/db/schema/user'
-import { eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 
 export const userRepo = {
   async byEmail(email: string) {
@@ -13,5 +13,19 @@ export const userRepo = {
     const [createdUser] = await db.insert(user).values({ email, passwordHash, role }).returning()
 
     return createdUser
+  },
+
+  async listAll() {
+    const rows = await db
+      .select({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      })
+      .from(user)
+      .orderBy(asc(user.createdAt))
+
+    return rows
   },
 }

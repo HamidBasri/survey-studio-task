@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/lib/auth'
-import { SurveyConfigSchema } from '@/lib/config/survey'
+import { SurveyConfigSchema, type SurveyVisibility } from '@/lib/config/survey'
 import { USER_ROLE } from '@/lib/config/user'
 import { db } from '@/lib/db'
 import { response, survey, surveyAssignment, user } from '@/lib/db/schema'
@@ -20,6 +20,10 @@ const CreateSurveySchema = z.object({
   title: z.string().min(1, 'Title is required').max(255),
   config: SurveyConfigSchema,
   visibility: z.enum(['public', 'private']).default('public'),
+  assignedUserIds: z
+    .array(z.string().uuid('Invalid user ID'))
+    .optional()
+    .transform((value) => value ?? []),
 })
 
 /**
@@ -132,15 +136,32 @@ export const POST = asyncHandler(async (request: NextRequest) => {
     throw new ValidationError('Survey title must match config title')
   }
 
+  const visibility: SurveyVisibility = validatedData.visibility
+
+  // For private surveys, ensure there is at least one assigned user
+  if (visibility === 'private' && validatedData.assignedUserIds.length === 0) {
+    throw new ValidationError('At least one user must be assigned to a private survey')
+  }
+
   const [newSurvey] = await db
     .insert(survey)
     .values({
       title: validatedData.title,
       config: validatedData.config,
-      visibility: validatedData.visibility,
+      visibility,
       creatorId: currentUser.id,
     })
     .returning()
+
+  // Create survey assignments when requested for private surveys
+  if (visibility === 'private' && validatedData.assignedUserIds.length > 0) {
+    await db.insert(surveyAssignment).values(
+      validatedData.assignedUserIds.map((userId) => ({
+        surveyId: newSurvey.id,
+        userId,
+      })),
+    )
+  }
 
   surveyLogger.info(
     { surveyId: newSurvey.id, title: newSurvey.title },

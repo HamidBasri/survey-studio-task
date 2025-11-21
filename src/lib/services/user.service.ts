@@ -1,6 +1,7 @@
 import { hashPassword, verifyPassword } from '@/lib/auth/hash'
 import type { AuthUser } from '@/lib/auth/types'
 import { type UserRole } from '@/lib/config/user'
+import type { ID } from '@/lib/db/types'
 import { AppError, ConflictError, InternalError, ValidationError } from '@/lib/errors'
 import { createLogger } from '@/lib/logger'
 import { userRepo } from '@/lib/repositories/user.repo'
@@ -8,6 +9,12 @@ import { userRepo } from '@/lib/repositories/user.repo'
 const userServiceLogger = createLogger({ scope: 'userService' })
 
 const MIN_PASSWORD_LENGTH = 8
+
+export type UserSummary = {
+  id: ID
+  email: string
+  role: UserRole
+}
 
 export const userService = {
   async register(email: string, password: string, role: UserRole = 'user'): Promise<AuthUser> {
@@ -84,6 +91,28 @@ export const userService = {
 
       userServiceLogger.error({ err }, 'User authentication failed')
       throw new InternalError('Authentication failed', { code: 'AUTH_FAILED' })
+    }
+  },
+
+  async listUsers(): Promise<UserSummary[]> {
+    try {
+      const users = await userRepo.listAll()
+
+      userServiceLogger.debug({ count: users.length }, 'Users listed')
+
+      return users.map((u) => ({
+        id: u.id as ID,
+        email: u.email,
+        role: u.role,
+      }))
+    } catch (err) {
+      if (err instanceof AppError) {
+        userServiceLogger.warn({ err }, 'User listing failed with expected error')
+        throw err
+      }
+
+      userServiceLogger.error({ err }, 'User listing failed')
+      throw new InternalError('User listing failed', { code: 'USER_LIST_FAILED' })
     }
   },
 }

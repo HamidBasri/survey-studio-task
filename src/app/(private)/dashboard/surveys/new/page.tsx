@@ -2,10 +2,11 @@
 
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout'
-import { DynamicSurveyForm } from '@/components/survey/dynamic-survey-form'
-import type { SurveyConfig } from '@/lib/config/survey'
+import { DynamicSurveyForm, SurveyVisibilitySelector } from '@/components/survey'
+import type { SurveyConfig, SurveyVisibility } from '@/lib/config/survey'
 import { parseSurveyConfig } from '@/lib/config/survey-parser'
 import { useCreateSurvey } from '@/lib/hooks/use-surveys'
+import { useUsers } from '@/lib/hooks/use-users'
 import { AlertCircle, CheckCircle, FileJson, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { type UIEvent, useRef, useState } from 'react'
@@ -49,11 +50,14 @@ export default function NewSurveyPage() {
   const [syntaxLocation, setSyntaxLocation] = useState<{ line: number; column: number } | null>(
     null,
   )
+  const [visibility, setVisibility] = useState<SurveyVisibility>('public')
+  const [assignedUserIds, setAssignedUserIds] = useState<string[]>([])
   const lineNumbersRef = useRef<HTMLDivElement | null>(null)
   const validationTimeoutRef = useRef<number | null>(null)
   const lines = jsonInput.split('\n')
 
   const createSurvey = useCreateSurvey()
+  const { data: users, isLoading: isLoadingUsers, error: usersError } = useUsers()
 
   const getSyntaxLocation = (json: string, errorMessage: string) => {
     const match = /position (\d+)/.exec(errorMessage)
@@ -118,7 +122,8 @@ export default function NewSurveyPage() {
       await createSurvey.mutateAsync({
         title: parsedConfig.title,
         config: parsedConfig,
-        visibility: 'public',
+        visibility,
+        assignedUserIds: visibility === 'private' ? assignedUserIds : [],
       })
 
       router.push('/dashboard')
@@ -203,7 +208,22 @@ export default function NewSurveyPage() {
               />
             </div>
 
-            <div className="border-t border-gray-100 px-6 py-4">
+            <div className="border-t border-gray-100 px-6 py-4 space-y-4">
+              <SurveyVisibilitySelector
+                visibility={visibility}
+                onVisibilityChange={(value) => {
+                  setVisibility(value)
+                  if (value === 'public') {
+                    setAssignedUserIds([])
+                  }
+                }}
+                users={users ?? []}
+                selectedUserIds={assignedUserIds}
+                onSelectedUserIdsChange={setAssignedUserIds}
+                isLoadingUsers={isLoadingUsers}
+                usersError={usersError instanceof Error ? usersError : null}
+              />
+
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={handleValidate}
