@@ -28,7 +28,7 @@ bun --version
 
 ### Installing Docker
 
-Download and install Docker Desktop from: https://www.docker.com/products/docker-desktop
+Download and install Docker Desktop from: <https://www.docker.com/products/docker-desktop>
 
 **Verify installation:**
 
@@ -516,7 +516,7 @@ docker exec -it db_dev psql -U postgres survey_studio
 
 **Error:**
 
-```
+```bash
 Error: bind: address already in use
 ```
 
@@ -537,7 +537,7 @@ APP_PORT=3001
 
 **Error:**
 
-```
+```bash
 Error: connect ECONNREFUSED
 ```
 
@@ -563,7 +563,7 @@ docker exec -it db_dev pg_isready -U postgres
 
 **Error:**
 
-```
+```bash
 Error: relation "users" already exists
 ```
 
@@ -717,25 +717,25 @@ Currently, the application doesn't store files. If file uploads are added:
 
 ## Upgrading Dependencies
 
-### Check for updates:
+### Check for updates
 
 ```bash
 bun outdated
 ```
 
-### Update all dependencies:
+### Update all dependencies
 
 ```bash
 bun update
 ```
 
-### Update specific package:
+### Update specific package
 
 ```bash
 bun update next@latest
 ```
 
-### After updates:
+### After updates
 
 ```bash
 ./run.sh lint

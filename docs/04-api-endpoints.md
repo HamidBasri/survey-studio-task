@@ -14,7 +14,7 @@ All protected endpoints require authentication via NextAuth.js session cookies.
 
 **Headers:**
 
-```
+```md
 Cookie: next-auth.session-token=<jwt-token>
 ```
 

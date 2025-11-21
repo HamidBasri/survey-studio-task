@@ -128,43 +128,43 @@ Comprehensive documentation is available in the [`/docs`](./docs) directory:
 
 ## 📁 Project Structure
 
-```
+```md
 survey-studio/
-├── docs/                      # Comprehensive documentation
-│   ├── 01-overview.md
-│   ├── 02-architecture.md
-│   ├── 03-database.md
-│   ├── 04-api-endpoints.md
-│   ├── 05-setup-guide.md
-│   ├── 06-user-flows.md
-│   └── 07-checklist-roadmap.md
+├── docs/ # Comprehensive documentation
+│ ├── 01-overview.md
+│ ├── 02-architecture.md
+│ ├── 03-database.md
+│ ├── 04-api-endpoints.md
+│ ├── 05-setup-guide.md
+│ ├── 06-user-flows.md
+│ └── 07-checklist-roadmap.md
 │
 ├── src/
-│   ├── app/                   # Next.js App Router
-│   │   ├── (auth)/           # Authentication routes
-│   │   ├── (private)/        # Protected routes
-│   │   ├── (public)/         # Public routes
-│   │   └── api/              # API endpoints
-│   │
-│   ├── components/            # React components
-│   │   ├── dashboard/
-│   │   ├── survey/
-│   │   └── ui/               # shadcn/ui components
-│   │
-│   └── lib/                   # Core libraries
-│       ├── auth/             # Authentication logic
-│       ├── config/           # Configuration
-│       ├── db/               # Database (schema, client)
-│       ├── services/         # Business logic
-│       └── repositories/     # Data access
+│ ├── app/ # Next.js App Router
+│ │ ├── (auth)/ # Authentication routes
+│ │ ├── (private)/ # Protected routes
+│ │ ├── (public)/ # Public routes
+│ │ └── api/ # API endpoints
+│ │
+│ ├── components/ # React components
+│ │ ├── dashboard/
+│ │ ├── survey/
+│ │ └── ui/ # shadcn/ui components
+│ │
+│ └── lib/ # Core libraries
+│ ├── auth/ # Authentication logic
+│ ├── config/ # Configuration
+│ ├── db/ # Database (schema, client)
+│ ├── services/ # Business logic
+│ └── repositories/ # Data access
 │
-├── drizzle/                   # Database migrations
-├── public/                    # Static assets
-├── docker-compose.yml         # Production Docker config
-├── docker-compose.dev.yml     # Development Docker config
-├── Dockerfile                 # Multi-stage build
-├── run.sh                     # CLI helper script
-└── package.json               # Dependencies
+├── drizzle/ # Database migrations
+├── public/ # Static assets
+├── docker-compose.yml # Production Docker config
+├── docker-compose.dev.yml # Development Docker config
+├── Dockerfile # Multi-stage build
+├── run.sh # CLI helper script
+└── package.json # Dependencies
 ```
 
 ---
@@ -173,19 +173,19 @@ survey-studio/
 
 ### Admin: Create Survey
 
-```
+```md
 Dashboard → Create Survey → Configure questions → Set visibility → Submit
 ```
 
 ### User: Submit Response
 
-```
+```md
 Dashboard → My Surveys → Select survey → Fill form → Submit
 ```
 
 ### Admin: View Responses
 
-```
+```md
 Dashboard → Surveys → View Responses → Analyse data
 ```
 
@@ -330,7 +330,7 @@ See [07-Checklist & Roadmap](./docs/07-checklist-roadmap.md) for detailed AI enh
 
 ## 📦 Deployment
 
-### Development
+### Development (Docker)
 
 ```bash
 ./run.sh dev

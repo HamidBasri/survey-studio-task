@@ -6,43 +6,43 @@ Survey Studio uses **PostgreSQL 18** as its database with **Drizzle ORM** for ty
 
 ## Entity-Relationship Diagram
 
-```
+```md
 ┌─────────────────────┐
-│       user          │
+│ user │
 ├─────────────────────┤
-│ id (PK)             │
-│ email (UNIQUE)      │
-│ passwordHash        │
-│ role                │
-│ createdAt           │
+│ id (PK) │
+│ email (UNIQUE) │
+│ passwordHash │
+│ role │
+│ createdAt │
 └──────────┬──────────┘
-           │
-           │ 1:N (creator)
-           │
-           ├──────────────────────────┐
-           │                          │
-           │                          │
-┌──────────▼──────────┐    ┌─────────▼────────────┐
-│      survey         │    │  survey_assignment   │
-├─────────────────────┤    ├──────────────────────┤
-│ id (PK)             │◄───┤ id (PK)              │
-│ title               │ 1:N│ surveyId (FK)        │
-│ config (JSONB)      │    │ userId (FK)          │
-│ visibility          │    │ assignedAt           │
-│ creatorId (FK)      │    └──────────────────────┘
-│ createdAt           │              ▲
-└──────────┬──────────┘              │
-           │                         │ N:1
-           │ 1:N                     │
-           │                         │
-┌──────────▼──────────┐              │
-│     response        │              │
-├─────────────────────┤              │
-│ id (PK)             │              │
-│ surveyId (FK)       │              │
+│
+│ 1:N (creator)
+│
+├──────────────────────────┐
+│ │
+│ │
+┌──────────▼──────────┐ ┌─────────▼────────────┐
+│ survey │ │ survey_assignment │
+├─────────────────────┤ ├──────────────────────┤
+│ id (PK) │◄───┤ id (PK) │
+│ title │ 1:N│ surveyId (FK) │
+│ config (JSONB) │ │ userId (FK) │
+│ visibility │ │ assignedAt │
+│ creatorId (FK) │ └──────────────────────┘
+│ createdAt │ ▲
+└──────────┬──────────┘ │
+│ │ N:1
+│ 1:N │
+│ │
+┌──────────▼──────────┐ │
+│ response │ │
+├─────────────────────┤ │
+│ id (PK) │ │
+│ surveyId (FK) │ │
 │ userId (FK) ────────┴──────────────┘
-│ answers (JSONB)     │
-│ createdAt           │
+│ answers (JSONB) │
+│ createdAt │
 └─────────────────────┘
 
 Legend:

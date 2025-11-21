@@ -17,7 +17,9 @@ print_help() {
   echo "Available commands:"
   echo ""
   echo "  dev             Start development environment"
-  echo "  dev-down        Stop development environment"
+  echo "  dev-down       Stop production environment"
+  echo "                   Options:"
+  echo "                     --db | -v      Remove database volume"
   echo ""
   echo "  prod-build      Build production containers (with Bake)"
   echo "  prod-up         Start production environment"
@@ -52,7 +54,14 @@ case "$COMMAND" in
     ;;
 
   dev-down)
-    docker compose -f docker-compose.dev.yml down
+    if [[ "$ARG" == "--db" || "$ARG" == "-v" ]]; then
+      echo "Stopping development and removing DB volume..."
+      docker compose -f docker-compose.dev.yml down -v
+    else
+      echo "Stopping development..."
+      docker compose -f docker-compose.dev.yml down
+    fi
+    echo "✔ Development shutdown complete"
     ;;
 
   prod-build)

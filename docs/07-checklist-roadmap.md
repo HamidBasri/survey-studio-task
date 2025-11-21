@@ -336,9 +336,10 @@ export async function generateQuestions(topic: string, count: number) {
 
 **Example Output**:
 
-```
+```md
 Summary: 85% of respondents are satisfied with the service.
 Common themes:
+
 - Fast delivery (mentioned 45 times)
 - Friendly staff (mentioned 38 times)
 - High prices (concern raised by 22 respondents)
