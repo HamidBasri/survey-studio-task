@@ -9,7 +9,7 @@ import { useCreateSurvey } from '@/lib/hooks/use-surveys'
 import { useUsers } from '@/lib/hooks/use-users'
 import { AlertCircle, CheckCircle, FileJson, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { type UIEvent, useRef, useState } from 'react'
+import { type UIEvent, useEffect, useRef, useState } from 'react'
 
 const DEFAULT_JSON = `{
   "title": "Customer Satisfaction Survey",
@@ -54,7 +54,39 @@ export default function NewSurveyPage() {
   const [assignedUserIds, setAssignedUserIds] = useState<string[]>([])
   const lineNumbersRef = useRef<HTMLDivElement | null>(null)
   const validationTimeoutRef = useRef<number | null>(null)
+  const formatTimeoutRef = useRef<number | null>(null)
   const lines = jsonInput.split('\n')
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null
+      const tagName = target?.tagName
+      const isEditableTarget =
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        (target !== null && target.isContentEditable)
+
+      if (event.key === 'Backspace' && !isEditableTarget) {
+        event.preventDefault()
+        return
+      }
+
+      if (event.key === 'ArrowLeft' && (event.altKey || event.metaKey)) {
+        event.preventDefault()
+        return
+      }
+
+      if (event.key === '[' && event.metaKey) {
+        event.preventDefault()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const createSurvey = useCreateSurvey()
   const { data: users, isLoading: isLoadingUsers, error: usersError } = useUsers()
@@ -187,6 +219,11 @@ export default function NewSurveyPage() {
                     validationTimeoutRef.current = null
                   }
 
+                  if (formatTimeoutRef.current !== null) {
+                    window.clearTimeout(formatTimeoutRef.current)
+                    formatTimeoutRef.current = null
+                  }
+
                   if (!value.trim()) {
                     setParsedConfig(null)
                     setParseError(null)
@@ -200,6 +237,14 @@ export default function NewSurveyPage() {
                   validationTimeoutRef.current = window.setTimeout(() => {
                     runValidation(value)
                   }, 400)
+
+                  formatTimeoutRef.current = window.setTimeout(() => {
+                    try {
+                      const parsed = JSON.parse(value)
+                      const formatted = JSON.stringify(parsed, null, 2)
+                      setJsonInput(formatted)
+                    } catch {}
+                  }, 800)
                 }}
                 onScroll={handleTextareaScroll}
                 className="flex-1 min-h-0 resize-none overflow-y-auto border-0 bg-transparent px-4 py-4 text-sm leading-6 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
