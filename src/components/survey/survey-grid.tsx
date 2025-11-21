@@ -1,6 +1,7 @@
 'use client'
 
 import { useDeleteSurvey, useSurveys, type Survey } from '@/lib/hooks/use-surveys'
+import { useUserSurveys, type UserSurvey } from '@/lib/hooks/use-user-surveys'
 import { Code, FileText, Globe, Lock, Trash2, UserCheck, Users } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -9,6 +10,9 @@ import { JsonViewerDialog } from './json-viewer-dialog'
 
 export function SurveyGrid() {
   const { data: surveys, isLoading, error } = useSurveys()
+  const { data: userSurveys } = useUserSurveys()
+
+  const userSurveyMap = new Map<string, UserSurvey>(userSurveys?.map((s) => [s.id, s]) ?? [])
 
   if (isLoading) {
     return (
@@ -43,13 +47,13 @@ export function SurveyGrid() {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {surveys.map((survey) => (
-        <SurveyCard key={survey.id} survey={survey} />
+        <SurveyCard key={survey.id} survey={survey} userSurvey={userSurveyMap.get(survey.id)} />
       ))}
     </div>
   )
 }
 
-function SurveyCard({ survey }: { survey: Survey }) {
+function SurveyCard({ survey, userSurvey }: { survey: Survey; userSurvey?: UserSurvey }) {
   const [showJsonViewer, setShowJsonViewer] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const deleteSurvey = useDeleteSurvey()
@@ -125,6 +129,14 @@ function SurveyCard({ survey }: { survey: Survey }) {
               <Trash2 className="h-4 w-4" />
               Delete
             </button>
+            {userSurvey && !userSurvey.isSubmitted && (
+              <Link
+                href={`/dashboard/surveys/${survey.id}/submit`}
+                className="flex flex-1 items-center justify-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+              >
+                Submit
+              </Link>
+            )}
             <Link
               href={`/dashboard/surveys/${survey.id}`}
               className="flex flex-1 items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
