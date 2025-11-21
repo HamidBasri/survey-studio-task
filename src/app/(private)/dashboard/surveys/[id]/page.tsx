@@ -1,11 +1,12 @@
 'use client'
 
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
+import { DashboardLayout } from '@/components/dashboard/dashboard-layout'
 import { DynamicSurveyForm } from '@/components/survey/dynamic-survey-form'
 import { Button } from '@/components/ui/button'
 import type { SurveyConfig } from '@/lib/config/survey'
 import type { ID, Json } from '@/lib/db/types'
-import { ArrowLeft, Calendar, Trash2, User } from 'lucide-react'
-import Link from 'next/link'
+import { Calendar, ClipboardList, Trash2, User } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -97,49 +98,29 @@ export default function SurveyResponsesPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="border-b border-gray-200/60 bg-white/95 backdrop-blur-sm">
-          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Button>
-            </Link>
+      <DashboardLayout
+        header={<DashboardHeader title="Survey Responses" icon={ClipboardList} showBackButton />}
+      >
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
+            <p className="mt-4 text-sm text-gray-600">Loading responses...</p>
           </div>
-        </header>
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
-              <p className="mt-4 text-sm text-gray-600">Loading responses...</p>
-            </div>
-          </div>
-        </main>
-      </div>
+        </div>
+      </DashboardLayout>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="border-b border-gray-200/60 bg-white/95 backdrop-blur-sm">
-          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Button>
-            </Link>
-          </div>
-        </header>
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-            <p className="text-sm font-medium text-red-800">Failed to load responses</p>
-            <p className="mt-1 text-xs text-red-600">{error}</p>
-          </div>
-        </main>
-      </div>
+      <DashboardLayout
+        header={<DashboardHeader title="Survey Responses" icon={ClipboardList} showBackButton />}
+      >
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+          <p className="text-sm font-medium text-red-800">Failed to load responses</p>
+          <p className="mt-1 text-xs text-red-600">{error}</p>
+        </div>
+      </DashboardLayout>
     )
   }
 
@@ -148,51 +129,39 @@ export default function SurveyResponsesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200/60 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="space-y-2">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Button>
-            </Link>
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-              {data.survey.title}
-            </h1>
-            <p className="text-sm text-gray-500">
-              {data.responses.length} {data.responses.length === 1 ? 'response' : 'responses'}
-            </p>
-          </div>
+    <DashboardLayout
+      header={
+        <DashboardHeader
+          title={data.survey.title}
+          subtitle={`${data.responses.length} ${data.responses.length === 1 ? 'response' : 'responses'}`}
+          icon={ClipboardList}
+          showBackButton
+        />
+      }
+    >
+      {/* Responses List */}
+      {data.responses.length === 0 ? (
+        <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center sm:p-12">
+          <p className="text-lg font-semibold text-gray-900">No responses yet</p>
+          <p className="mt-2 text-sm text-gray-600">
+            Responses will appear here once users submit the survey.
+          </p>
         </div>
-      </header>
-
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Responses List */}
-        {data.responses.length === 0 ? (
-          <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center sm:p-12">
-            <p className="text-lg font-semibold text-gray-900">No responses yet</p>
-            <p className="mt-2 text-sm text-gray-600">
-              Responses will appear here once users submit the survey.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {data.responses.map((response, index) => (
-              <ResponseCard
-                key={response.id}
-                response={response}
-                index={index}
-                surveyConfig={data.survey.config}
-                onDelete={handleDelete}
-                isDeleting={deletingId === response.id}
-              />
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
+      ) : (
+        <div className="space-y-6">
+          {data.responses.map((response, index) => (
+            <ResponseCard
+              key={response.id}
+              response={response}
+              index={index}
+              surveyConfig={data.survey.config}
+              onDelete={handleDelete}
+              isDeleting={deletingId === response.id}
+            />
+          ))}
+        </div>
+      )}
+    </DashboardLayout>
   )
 }
 

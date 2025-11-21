@@ -1,12 +1,14 @@
 'use client'
 
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
+import { DashboardLayout } from '@/components/dashboard/dashboard-layout'
 import type { SurveyFormValues } from '@/components/survey/dynamic-survey-form'
 import { DynamicSurveyForm } from '@/components/survey/dynamic-survey-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSubmitResponse, useUserSurveys } from '@/lib/hooks/use-user-surveys'
-import { AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { AlertCircle, ArrowLeft, CheckCircle2, ClipboardEdit } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
@@ -35,7 +37,10 @@ export default function SurveySubmitPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
+      <DashboardLayout
+        header={<DashboardHeader title="Submit Survey" icon={ClipboardEdit} showBackButton />}
+        maxWidth="4xl"
+      >
         <Skeleton className="mb-8 h-10 w-3/4" />
         <Card>
           <CardContent className="space-y-6 p-8">
@@ -45,13 +50,16 @@ export default function SurveySubmitPage() {
             <Skeleton className="h-10 w-32" />
           </CardContent>
         </Card>
-      </div>
+      </DashboardLayout>
     )
   }
 
   if (!survey) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
+      <DashboardLayout
+        header={<DashboardHeader title="Submit Survey" icon={ClipboardEdit} showBackButton />}
+        maxWidth="4xl"
+      >
         <Card className="border-red-200 bg-red-50">
           <CardContent className="flex flex-col items-center gap-4 p-12 text-center">
             <AlertCircle className="h-16 w-16 text-red-600" />
@@ -68,13 +76,16 @@ export default function SurveySubmitPage() {
             </Link>
           </CardContent>
         </Card>
-      </div>
+      </DashboardLayout>
     )
   }
 
   if (survey.isSubmitted) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
+      <DashboardLayout
+        header={<DashboardHeader title="Submit Survey" icon={ClipboardEdit} showBackButton />}
+        maxWidth="4xl"
+      >
         <Card className="border-green-200 bg-green-50">
           <CardContent className="flex flex-col items-center gap-4 p-12 text-center">
             <CheckCircle2 className="h-16 w-16 text-green-600" />
@@ -91,13 +102,16 @@ export default function SurveySubmitPage() {
             </Link>
           </CardContent>
         </Card>
-      </div>
+      </DashboardLayout>
     )
   }
 
   if (isSuccess) {
     return (
-      <div className="container mx-auto max-w-4xl py-8">
+      <DashboardLayout
+        header={<DashboardHeader title="Submit Survey" icon={ClipboardEdit} showBackButton />}
+        maxWidth="4xl"
+      >
         <Card className="border-green-200 bg-green-50">
           <CardContent className="flex flex-col items-center gap-4 p-12 text-center">
             <CheckCircle2 className="h-16 w-16 text-green-600" />
@@ -113,21 +127,22 @@ export default function SurveySubmitPage() {
             </Link>
           </CardContent>
         </Card>
-      </div>
+      </DashboardLayout>
     )
   }
 
   return (
-    <div className="container mx-auto max-w-4xl py-8">
-      <div className="mb-6">
-        <Link href="/dashboard">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
-          </Button>
-        </Link>
-      </div>
-
+    <DashboardLayout
+      header={
+        <DashboardHeader
+          title={survey.config.title}
+          subtitle="Complete the survey below"
+          icon={ClipboardEdit}
+          showBackButton
+        />
+      }
+      maxWidth="4xl"
+    >
       <Card>
         <CardContent className="p-8">
           {submitResponse.isError && (
@@ -150,6 +165,6 @@ export default function SurveySubmitPage() {
           />
         </CardContent>
       </Card>
-    </div>
+    </DashboardLayout>
   )
 }

@@ -1,0 +1,64 @@
+{
+  "title": "Customer Satisfaction Survey",
+  "questions": [
+    {
+      "type": "text",
+      "label": "What is your name?",
+      "name": "name",
+      "validation": { "required": true, "minLength": 3 }
+    },
+    {
+      "type": "multiple_choice",
+      "label": "How did you hear about us?",
+      "name": "referral",
+      "options": ["Friends", "Online Ad", "Social Media", "Other"],
+      "validation": { "required": true }
+    },
+    {
+      "type": "rating",
+      "label": "Rate our service",
+      "name": "rating",
+      "scale": 5,
+      "validation": { "required": true }
+    },
+    {
+      "type": "multiple_select",
+      "label": "What did you like about our service?",
+      "name": "likes",
+      "options": ["Fast", "Friendly", "Affordable", "Other"],
+      "validation": { "required": true, "minChoices": 1 }
+    },
+    {
+      "type": "yes_no",
+      "label": "Would you recommend us to a friend?",
+      "name": "recommend",
+      "validation": { "required": true }
+    },
+    {
+        "type": "textarea",
+        "label": "Please specify why you would not recommend us.",
+        "name": "not_recommend_reason",
+        "validation": { "required": false },
+        "condition": {
+            "name": "recommend",
+            "value": false
+        }
+    },
+    {
+      "type": "multiple_select_with_other",
+      "label": "What can we do to improve our service?",
+      "name": "improvements",
+      "options": ["Faster response time", "More payment options", "Other"],
+      "validation": { "required": true, "minChoices": 1 },
+      "condition": {
+        "name": "recommend",
+        "value": false
+      }
+    },
+    {
+      "type": "textarea",
+      "label": "Any additional feedback?",
+      "name": "feedback"
+    }
+  ]
+}
