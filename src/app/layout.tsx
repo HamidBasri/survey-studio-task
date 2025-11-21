@@ -48,7 +48,23 @@ export default function RootLayout({
   const initialTheme = use(getInitialTheme())
 
   return (
-    <html lang="en" className={initialTheme === 'dark' ? 'dark' : undefined}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = document.cookie.match(/theme=([^;]+)/)?.[1] || 'light';
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
       </body>
